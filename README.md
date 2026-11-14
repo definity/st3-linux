@@ -45,4 +45,4 @@ The journey, including every dead end, is written down in [notes/JOURNAL.md](not
   CAN BE FREELY DISTRIBUTED AS LONG AS NO PAYMENT IS INVOLVED". Its files are included here on those terms.
 - The example songs and instruments belong to their authors.
 - Everything new in this repository (the emulator, tools and documentation) is released into the **public
-  domain**. Do whatever you like with it.
+  domain** under the [Unlicense](UNLICENSE). Do whatever you like with it.
