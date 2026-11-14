@@ -1,4 +1,4 @@
-/* io.c — port I/O dispatch: 8259 PIC, 8254 PIT ch0, 8237 DMA, Sound Blaster Pro, misc. */
+/* io.c — port I/O dispatch: 8259 PIC, 8254 PIT ch0, 8237 DMA, Sound Blaster Pro (+ OPL2 FM via opl.c), misc. */
 #include "machine.h"
 #include <string.h>
 
@@ -110,6 +110,7 @@ static void sb_cmd(Machine *m) {
 
 static uint8_t sb_in(Machine *m, int off) {
     switch (off) {
+    case 0x0: case 0x2: case 0x8: return opl_read_status(&m->opl, machine_vtime(m));
     case 0xA: {
         if (!m->sb.outn) return 0xAA;
         uint8_t v = m->sb.outq[0];
@@ -124,6 +125,8 @@ static uint8_t sb_in(Machine *m, int off) {
 
 static void sb_out(Machine *m, int off, uint8_t v) {
     switch (off) {
+    case 0x0: case 0x2: case 0x8: opl_write_addr(&m->opl, v); return;
+    case 0x1: case 0x3: case 0x9: mixer_update(m); opl_write_data(&m->opl, v, machine_vtime(m)); return;
     case 0x6:
         if (v & 1) m->sb.rst = 1;
         else if (m->sb.rst) { m->sb.rst = 0; m->sb.outn = 0; sb_outq(m, 0xAA); m->sb.running = 0; m->sb.cmd = -1; }
@@ -159,7 +162,7 @@ void sb_update(Machine *m) {
             for (uint32_t k = 0; k < n; k++) buf[k] = m->mem[(base + i + k) & 0xFFFFF];
             if (m->pcm_sink) {
                 int stereo = (m->sb.mix[0x0E] >> 1) & 1;
-                m->pcm_sink(m->pcm_ud, buf, (int)n, m->sb.bps / (stereo ? 2 : 1), stereo);
+                mixer_dac(m, buf, (int)n, m->sb.bps / (stereo ? 2 : 1), stereo);
             }
             m->sb.consumed += n;
         }
@@ -194,6 +197,7 @@ uint32_t io_in(void *ud, uint16_t port, int size) {
     if (port == 0x61) { m->port61 ^= 0x10; return m->port61; }   /* refresh toggle bit 4 */
     if (port == 0x64) return 0x14;
     if (port >= SB_BASE && port <= SB_BASE + 0xF) return sb_in(m, port - SB_BASE);
+    if (port == 0x388) return opl_read_status(&m->opl, machine_vtime(m));
     if (port >= 0x3C0 && port <= 0x3DF) return vga_in(m, port);
     return 0xFF;
 }
@@ -230,5 +234,7 @@ void io_out(void *ud, uint16_t port, int size, uint32_t val) {
     }
     if (port == 0x61) { m->port61 = v; return; }
     if (port >= SB_BASE && port <= SB_BASE + 0xF) { sb_out(m, port - SB_BASE, v); return; }
+    if (port == 0x388) { opl_write_addr(&m->opl, v); return; }
+    if (port == 0x389) { mixer_update(m); opl_write_data(&m->opl, v, machine_vtime(m)); return; }
     if (port >= 0x3C0 && port <= 0x3DF) { vga_out(m, port, v); return; }
 }

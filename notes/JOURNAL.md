@@ -119,3 +119,14 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   DISPLAY: not a bug. F5 Info Screen bottom window defaults to "None"; PgUp/PgDn selects Track-5/8/18 (manual 3.5).
   The user's "magic key" was likely PgDn. VU bars verified moving (out/d_info.png). CRTC start address never written (no page flip).
   Side project requested: WebAssembly build running in Chrome (after Route A is solid).
+- [m4b] 2026-11-14 ADLIB FM. ST3 drives OPL2 at 388h/389h (no detection probe; resets all regs several times, delay reads
+  on 389h). New src/opl.c: original YM3812 emulation (logsin/exp tables computed, MAME-style EG rate tables, tremolo 210-step
+  /64, vibrato 8-step /1024, KSL rom, 4 waveforms w/ WSE, feedback (a+b)>>(9-fb), rhythm mode w/ 23-bit noise LFSR,
+  timers + status). tests/opl_test.c: pitch 439.99 Hz for A4, peak 4086, attack times within 1% of datasheet, decay
+  consistently +7% vs datasheet (same as table-driven emulators; accepted).
+  New src/mixer.c: SB DAC (resampled, split-frame carry moved here) + FM (49716 Hz -> 48k linear) summed into one 48 kHz s16
+  stereo stream clocked by vtime; OPL data writes first catch the mixer up to "now". audio.c is now a plain pipe writer.
+  FM gain 1 (chip sums voices into 16 bits feeding its DAC). Ports 220-223/228-229 also map to the OPL.
+  ST3 executes a stray INT3 (CC at 2CFD:4ECC) in its FM note-on routine; protector restores IVT, so DOS default IRET -> no-op.
+  tools/mkfmsong.py writes FMTEST.S3M (original test song: 4 FM patches + BD/SD/HH, Am-F-C-G). ST3 loads/plays it:
+  VU on A1-A4/AB/AS/AH, Goertzel shows chord tones A2/A4/C5/E5 >> off-key bins; no clipping (peak 20970). 0 underruns realtime.

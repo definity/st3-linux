@@ -13,17 +13,17 @@ static uint8_t MEM[MEM_SIZE];
 static Machine M;
 
 typedef struct { uint8_t *buf; size_t n, cap; double rate; int stereo; } Wav;
-static void sink(void *ud, const uint8_t *d, int n, double rate, int stereo) {
-    Wav *w = ud;
+static void sink(void *ud, const int16_t *f, int frames) {   /* mixer output: 48 kHz s16 stereo */
+    Wav *w = ud; size_t n = (size_t)frames * 4;
     if (w->n + n > w->cap) { w->cap = (w->n + n) * 2 + 65536; w->buf = realloc(w->buf, w->cap); }
-    memcpy(w->buf + w->n, d, n); w->n += n; w->rate = rate; w->stereo = stereo;
+    memcpy(w->buf + w->n, f, n); w->n += n; w->rate = MIX_RATE; w->stereo = 1;
 }
 static void wav_write(const char *path, Wav *w) {
     FILE *f = fopen(path, "wb"); if (!f) return;
     int ch = w->stereo ? 2 : 1; uint32_t rate = (uint32_t)(w->rate + 0.5), n = (uint32_t)w->n;
     uint8_t h[44]; memcpy(h, "RIFF", 4); uint32_t v = 36 + n; memcpy(h + 4, &v, 4); memcpy(h + 8, "WAVEfmt ", 8);
     v = 16; memcpy(h + 16, &v, 4); uint16_t s = 1; memcpy(h + 20, &s, 2); s = ch; memcpy(h + 22, &s, 2);
-    memcpy(h + 24, &rate, 4); v = rate * ch; memcpy(h + 28, &v, 4); s = ch; memcpy(h + 32, &s, 2); s = 8; memcpy(h + 34, &s, 2);
+    memcpy(h + 24, &rate, 4); v = rate * ch * 2; memcpy(h + 28, &v, 4); s = ch * 2; memcpy(h + 32, &s, 2); s = 16; memcpy(h + 34, &s, 2);
     memcpy(h + 36, "data", 4); memcpy(h + 40, &n, 4);
     fwrite(h, 1, 44, f); fwrite(w->buf, 1, n, f); fclose(f);
 }

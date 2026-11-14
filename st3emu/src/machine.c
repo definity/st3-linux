@@ -18,6 +18,7 @@ void machine_init(Machine *m, uint8_t *mem, const MachineConfig *cfg, FILE *log)
     m->pit_div = 0; m->pit_next = 65536 / 1193182.0;
     m->sb.cmd = -1;
     vga_init(m);
+    opl_reset(&m->opl);
     bios_init(m);
     dos_init(m);
 }
@@ -120,7 +121,7 @@ int machine_run(Machine *m, uint64_t n) {
         } else if (r == 2) idle = 1;   /* HLT */
         if (idle) c->icount += CHUNK;
         timers_update(m);
-        sb_update(m);
+        mixer_update(m);
         if (m->irr) deliver_irqs(m, force);
     }
     return 0;

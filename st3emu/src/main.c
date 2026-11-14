@@ -139,7 +139,7 @@ static void get_winsize(void) {
     if (!ioctl(1, TIOCGWINSZ, &ws) && ws.ws_row && ws.ws_col) { term_rows = ws.ws_row; term_cols = ws.ws_col; }
 }
 
-static void pcm_sink(void *ud, const uint8_t *d, int n, double rate, int stereo) { audio_feed((Audio *)ud, d, n, rate, stereo); }
+static void pcm_sink(void *ud, const int16_t *f, int n) { audio_write((Audio *)ud, f, n); }
 
 static void usage(void) {
     fprintf(stderr,

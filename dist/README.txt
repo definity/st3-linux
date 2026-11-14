@@ -4,7 +4,8 @@ st3 — Scream Tracker 3.21 (Future Crew, 1994) for Linux terminals
 What this is
   A single static x86-64 Linux ELF (`st3`) that contains the original Scream Tracker 3.21
   program (unpacked from its Future Crew protection + PKLITE layers) and runs it on a built-in
-  emulated PC: 386 real-mode CPU, VGA text mode (80x50, ST3's custom fonts), Sound Blaster Pro,
+  emulated PC: 386 real-mode CPU, VGA text mode (80x50, ST3's custom fonts), Sound Blaster Pro with its
+  OPL2 FM chip (AdLib instruments),
   BIOS and DOS. ST3's screen is drawn in your terminal with 24-bit color; sound goes to PipeWire.
 
 Run it
@@ -39,6 +40,6 @@ Options
 
 Files here
   st3           the program        ST3.SET  ST3 settings        ########.ST3  instrument library index
-  i/            sample library     s/       example songs (.S3M .STM .MOD)      docs/  original docs (UTF-8)
+  i/            sample library     s/       example songs (.S3M .STM .MOD); FMTEST.S3M = AdLib FM demo      docs/  original docs (UTF-8)
 
 Scream Tracker 3.21 (C) 1993,1994 Sami Tammilehto / Future Crew — distributed by its authors as freeware.

@@ -2,6 +2,7 @@
 #ifndef ST3_MACHINE_H
 #define ST3_MACHINE_H
 #include "cpu.h"
+#include "opl.h"
 #include <stdio.h>
 
 #define STUBSEG 0xF000          /* IVT entries point at F000:nn; executing there traps to HLE */
@@ -64,8 +65,18 @@ typedef struct Machine {
         uint8_t mix[256]; int mixidx;
         int irq_pending_f2; double f2_at;
     } sb;
-    /* PCM sink: called with bytes the virtual DAC "played" */
-    void (*pcm_sink)(void *ud, const uint8_t *data, int n, double rate, int stereo);
+    /* FM synthesizer (YM3812) at 388h/389h, also 220h-223h and 228h/229h */
+    Opl opl;
+    /* output mixer: SB DAC + FM -> 48 kHz s16 stereo, clocked by virtual time (mixer.c) */
+    struct {
+        double phase; float pl, pr; uint8_t part[2]; int part_n, stereo_prev;   /* DAC resampler state */
+        int16_t dacq[8192 * 2]; int dq_n;                                         /* resampled DAC frames */
+        double opl_pos; int opl_prev, opl_cur;                                    /* FM resampler state */
+        uint64_t frames;                                                          /* output frames so far */
+        int16_t out[1024 * 2]; int on;
+    } mix;
+    /* PCM sink: receives the mixed output, 48 kHz signed 16-bit stereo frames */
+    void (*pcm_sink)(void *ud, const int16_t *frames, int nframes);
     void *pcm_ud;
 
     /* keyboard: BIOS-level queue of (scan<<8|ascii) */
@@ -99,6 +110,10 @@ uint32_t io_in(void *ud, uint16_t port, int size);
 void io_out(void *ud, uint16_t port, int size, uint32_t val);
 void timers_update(Machine *m);
 void sb_update(Machine *m);
+/* mixer.c */
+#define MIX_RATE 48000
+void mixer_dac(Machine *m, const uint8_t *d, int n, double rate, int stereo);
+void mixer_update(Machine *m);
 /* vga.c */
 void vga_init(Machine *m);
 uint8_t vga_in(Machine *m, uint16_t port);

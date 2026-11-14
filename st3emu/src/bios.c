@@ -132,6 +132,7 @@ int bios_service(Machine *m, int vec, uint16_t *fl) {
     switch (vec) {
     case 0x10: return int10(m, fl);
     case 0x16: return int16(m, fl);
+    case 0x03: return 1;   /* INT 3: a stray breakpoint in ST3's FM note-on code; DOS default handler is IRET */
     case 0x21: return dos_service(m, fl);
     case 0x20: m->exited = 1; m->exit_code = 0; return 1;
     case 0x08: {
