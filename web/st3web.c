@@ -1,7 +1,7 @@
 /* st3web.c — browser front end for the ST3 emulator (WebAssembly).  The page (index.html + st3.js) drives it:
  *   st3_init()                        set up the machine (C:\ST3 = /st3 in the browser filesystem) and load ST3
  *   st3_frame(now_s, queued_s)        advance the emulator; paced by the audio queue (queued_s >= 0) or the wall clock
- *   st3_render()                      draw the exact VGA picture into an RGBA buffer, returns 1 if it changed
+ *   st3_render()                      draw the exact VGA picture (8-bit indices + palette), returns 1 if it changed
  *   st3_key(biosKey) / st3_shift(f)   keyboard: BIOS key codes and the live Shift/Ctrl/Alt state from key up/down
  *   st3_audio_take()                  mixed audio produced since the last call (48 kHz stereo float, interleaved)
  * The emulator core (st3emu/src) is shared unchanged with the Linux terminal version. */
@@ -15,7 +15,6 @@ extern const unsigned char st3_exe[]; extern const unsigned int st3_exe_len;
 static uint8_t MEM[MEM_SIZE];
 static Machine M;
 static VgaFrame VF;
-static uint32_t rgba[VGAFB_MAXW * VGAFB_MAXH];
 static uint32_t lastsum;
 static double t0 = -1;
 static int started;
@@ -61,17 +60,20 @@ EMSCRIPTEN_KEEPALIVE float *st3_audio_buf(void) { return aq; }
 EMSCRIPTEN_KEEPALIVE int st3_render(void) {
     if (!started || M.fontmode || M.font_uploads == 0) return 0;   /* ST3 shows its own fonts within ~1 s of start */
     vgafb_render(&M, &VF, (unsigned)(machine_vtime(&M) * 70.086));
-    uint32_t pal[256];
-    for (int i = 0; i < 256; i++) pal[i] = 0xFF000000u | VF.pal[i * 3 + 2] << 16 | VF.pal[i * 3 + 1] << 8 | VF.pal[i * 3];
-    uint32_t sum = 2166136261u ^ (uint32_t)(VF.w * 7 + VF.h);
-    for (int i = 0; i < VF.w * VF.h; i++) { uint32_t c = pal[VF.pix[i]]; rgba[i] = c; sum = (sum ^ c) * 16777619u; }
+    uint32_t sum = 2166136261u ^ (uint32_t)(VF.w * 7 + VF.h), n = (uint32_t)(VF.w * VF.h);
+    for (uint32_t i = 0; i + 4 <= n; i += 4) { uint32_t v; memcpy(&v, VF.pix + i, 4); sum = (sum ^ v) * 16777619u; }
+    for (int i = 0; i < 768; i += 4) { uint32_t v; memcpy(&v, VF.pal + i, 4); sum = (sum ^ v) * 16777619u; }
     if (sum == lastsum) return 0;
     lastsum = sum; return 1;
 }
-EMSCRIPTEN_KEEPALIVE uint32_t *st3_pixels(void) { return rgba; }
+/* the picture as 8-bit colour indices (w*h bytes) plus the 256-colour palette (768 bytes, R G B): 4x less to move
+ * than RGBA; the page expands it */
+EMSCRIPTEN_KEEPALIVE uint8_t *st3_pixels(void) { return VF.pix; }
+EMSCRIPTEN_KEEPALIVE uint8_t *st3_palette(void) { return VF.pal; }
 EMSCRIPTEN_KEEPALIVE int st3_width(void) { return VF.w; }
 EMSCRIPTEN_KEEPALIVE int st3_height(void) { return VF.h; }
 
 EMSCRIPTEN_KEEPALIVE void st3_key(int k) { if (k && machine_keyq_free(&M) > 0) machine_key(&M, (uint16_t)k); }
 EMSCRIPTEN_KEEPALIVE void st3_shift(int f) { M.shift_flags = (uint16_t)f; }
 EMSCRIPTEN_KEEPALIVE int st3_exited(void) { return M.exited; }
+EMSCRIPTEN_KEEPALIVE double st3_vtime(void) { return machine_vtime(&M); }

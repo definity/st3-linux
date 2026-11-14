@@ -23,12 +23,24 @@ function pumpAudio() {
   sentSinceReport += n;
 }
 
+// Frames go to the page as 8-bit pixels + palette in recycled buffers: the page sends each buffer back after
+// drawing it, so steady playback allocates nothing (fresh buffers at 60 fps made the page's memory climb).
+const framePool = [];
 function sendFrame() {
   if (!Module._st3_render()) return;
-  const w = Module._st3_width(), h = Module._st3_height(), p = Module._st3_pixels();
-  const px = Module.HEAPU8.slice(p, p + w * h * 4);
-  postMessage({ type: 'frame', w, h, px }, [px.buffer]);
+  const w = Module._st3_width(), h = Module._st3_height(), n = w * h;
+  let buf = framePool.pop();
+  if (!buf || buf.byteLength !== n + 768) {
+    if (inFlight >= 3) return;                    // page is behind: skip this frame rather than pile up buffers
+    buf = new ArrayBuffer(n + 768); stats.frameAllocs = (stats.frameAllocs || 0) + 1;
+  }
+  const u8 = new Uint8Array(buf), p = Module._st3_pixels(), pal = Module._st3_palette();
+  u8.set(Module.HEAPU8.subarray(p, p + n), 0);
+  u8.set(Module.HEAPU8.subarray(pal, pal + 768), n);
+  inFlight++; stats.framesSent = (stats.framesSent || 0) + 1;
+  postMessage({ type: 'frame', w, h, buf }, [buf]);
 }
+let inFlight = 0;
 
 function tick() {
   if (!running) return;
@@ -62,6 +74,24 @@ function save() {
     if (err) console.warn('save failed', err);
   });
 }
+// ST3 only sees DOS 8.3 names (the emulator's DOS skips anything else), so uploaded files get one, Windows style:
+// "My Cool Song (final).s3m" -> MYCOOL~1.S3M.  A name that already fits is kept (uppercased); the same name again
+// replaces the old file, as a copy would on DOS.
+function dosName(name, existing) {
+  const clean = (t) => t.toUpperCase().replace(/[^A-Z0-9_\-!#$%&'()@^`{}~]/g, '');
+  const dot = name.lastIndexOf('.');
+  const base = clean(dot > 0 ? name.slice(0, dot) : name), ext = clean(dot > 0 ? name.slice(dot + 1) : '').slice(0, 3);
+  const taken = new Set(existing.map((n) => n.toUpperCase()));
+  const join = (b) => (ext ? b + '.' + ext : b);
+  if (base.length > 0 && base.length <= 8 && base === (dot > 0 ? name.slice(0, dot) : name).toUpperCase()) return join(base);
+  const stem = (base || 'SONG').slice(0, 6);
+  for (let i = 1; i < 10000; i++) {
+    const tail = '~' + i, cand = join(stem.slice(0, 8 - tail.length) + tail);
+    if (!taken.has(cand)) return cand;
+  }
+  return join(stem);
+}
+
 function listFiles(dir, out) {
   for (const name of FS.readdir(dir)) {
     if (name === '.' || name === '..') continue;
@@ -74,22 +104,25 @@ function listFiles(dir, out) {
 onmessage = (e) => {
   const m = e.data;
   if (m.type === 'key') { if (running) Module._st3_key(m.k); }
+  else if (m.type === 'frameback') { inFlight--; if (framePool.length < 3) framePool.push(m.buf); }
   else if (m.type === 'shift') { if (running) Module._st3_shift(m.f); }
   else if (m.type === 'audioport') {
     audioPort = m.port;
     audioPort.onmessage = (ev) => { queued = ev.data.queued; underruns = ev.data.underruns; lastReport = performance.now(); sentSinceReport = 0; };
   } else if (m.type === 'upload') {
-    if (!FS.analyzePath(ROOT + '/s').exists) FS.mkdir(ROOT + '/s');
-    FS.writeFile(ROOT + '/s/' + m.name, new Uint8Array(m.data));
+    const dir = ROOT + '/s';
+    if (!FS.analyzePath(dir).exists) FS.mkdir(dir);
+    const name = dosName(m.name, FS.readdir(dir));
+    FS.writeFile(dir + '/' + name, new Uint8Array(m.data));
     save();
-    postMessage({ type: 'status', text: 'Added ' + m.name + ' to C:\\ST3\\S' });
+    postMessage({ type: 'status', text: 'Added ' + (name === m.name.toUpperCase() ? name : m.name + ' as ' + name) + ' to C:\\ST3\\S' });
   } else if (m.type === 'list') {
     postMessage({ type: 'list', files: listFiles(ROOT, []).sort() });
   } else if (m.type === 'get') {
     const data = FS.readFile(m.path);
     postMessage({ type: 'file', path: m.path, data }, [data.buffer]);
   } else if (m.type === 'stats') {
-    postMessage({ type: 'stats', stats: { ...stats, busy: stats.emuTotal / (performance.now() - stats.since), queued: queuedSeconds(), underruns, level } });
+    postMessage({ type: 'stats', stats: { ...stats, busy: stats.emuTotal / (performance.now() - stats.since), vtime: running ? Module._st3_vtime() : 0, wall: performance.now() / 1000, mem: Module.HEAPU8.length, queued: queuedSeconds(), underruns, level } });
   } else if (m.type === 'resetstats') {
     stats.maxGap = stats.maxEmu = stats.maxSync = stats.emuTotal = 0; stats.ticks = 0; stats.since = performance.now();
   }

@@ -3,7 +3,7 @@
 //   STEPS: space-separated tokens:  wait:MS  key:NAME (KeyboardEvent.code, e.g. KeyL, F5, ArrowDown, Enter, Space)
 //          ctrl:NAME alt:NAME shift:NAME  type:TEXT  shot:NAME  eval:JS
 import { spawn } from 'node:child_process';
-import { writeFileSync, mkdtempSync, readFileSync } from 'node:fs';
+import { writeFileSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -14,12 +14,14 @@ const port = 9300 + Math.floor(Math.random() * 500);
 const proc = spawn(chrome, ['--headless=new', `--remote-debugging-port=${port}`, `--user-data-dir=${prof}`,
   '--autoplay-policy=no-user-gesture-required', '--window-size=1280,1000', '--no-first-run', 'about:blank'],
   { stdio: 'ignore', detached: true });
-const cleanup = () => { try { process.kill(-proc.pid, 'SIGKILL'); } catch {} };
+const cleanup = () => { try { process.kill(-proc.pid, 'SIGKILL'); } catch {} try { rmSync(prof, { recursive: true, force: true }); } catch {} };
 process.on('exit', cleanup); process.on('SIGTERM', () => process.exit(1)); process.on('SIGINT', () => process.exit(1));
 setTimeout(() => { console.log('webdrive: overall timeout'); process.exit(1); }, +(process.env.WD_TIMEOUT || 200000));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 let ws, seq = 0; const pending = new Map(), logs = [];
+const _push = logs.push.bind(logs);
+logs.push = (...a) => { for (const x of a) console.log(`[t=${((Date.now() - t0) / 1000).toFixed(0)}s] ` + x); return _push(...a); };   // print as it happens
 async function connect() {
   for (let i = 0; i < 50; i++) {
     try {
@@ -38,7 +40,11 @@ async function connect() {
     if (d.method === 'Runtime.exceptionThrown') logs.push('[exception] ' + JSON.stringify(d.params.exceptionDetails.exception?.description || d.params.exceptionDetails.text));
   });
 }
-const send = (method, params = {}) => new Promise((r) => { const id = ++seq; pending.set(id, r); ws.send(JSON.stringify({ id, method, params })); });
+const t0 = Date.now();
+const send = (method, params = {}) => new Promise((r) => {
+  const id = ++seq; pending.set(id, r); ws.send(JSON.stringify({ id, method, params }));
+  setTimeout(() => { if (pending.has(id)) { console.log(`webdrive: no answer to ${method} after 30 s (t=${((Date.now() - t0) / 1000).toFixed(0)} s)`); process.exit(3); } }, 30000);
+});
 
 const KEYS = { Space: [' ', 32], Enter: ['Enter', 13], Escape: ['Escape', 27], Tab: ['Tab', 9], Backspace: ['Backspace', 8],
   ArrowUp: ['ArrowUp', 38], ArrowDown: ['ArrowDown', 40], ArrowLeft: ['ArrowLeft', 37], ArrowRight: ['ArrowRight', 39],
@@ -92,6 +98,11 @@ for (const tok of steps.split(' ').filter(Boolean)) {
     }
     logs.push(`keytest: ${table.length - bad}/${table.length} ok`);
   }
+  else if (cmd === 'offline') {               // offline:1 cuts the network (service worker must serve the page), offline:0 restores
+    await send('Network.enable');
+    await send('Network.emulateNetworkConditions', { offline: arg === '1', latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
+    logs.push('[net] offline=' + arg);
+  }
   else if (cmd === 'reload') { await send('Page.reload'); await sleep(1500); }
   else if (cmd === 'ctrl') await press(arg, 2);
   else if (cmd === 'alt') await press(arg, 1);
@@ -106,5 +117,4 @@ for (const tok of steps.split(' ').filter(Boolean)) {
   }
 }
 writeFileSync(`${out}.log`, logs.join('\n') + '\n');
-console.log(logs.join('\n'));
 ws.close(); process.exit(0);

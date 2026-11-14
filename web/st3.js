@@ -163,11 +163,15 @@ function draw() {
   sctx.imageSmoothingEnabled = true; sctx.imageSmoothingQuality = 'high';
   sctx.drawImage(mid, 0, 0, screen.width, screen.height);
 }
+let rgba = null, lut = new Uint32Array(256);
 function paint() {
   if (pending) {
-    const { w, h, px } = pending; pending = null;
-    if (!img || img.width !== w || img.height !== h) { img = new ImageData(w, h); src.width = w; src.height = h; }
-    img.data.set(px);
+    const { w, h, buf } = pending; pending = null;
+    if (!img || img.width !== w || img.height !== h) { img = new ImageData(w, h); src.width = w; src.height = h; rgba = new Uint32Array(img.data.buffer); }
+    const u8 = new Uint8Array(buf), n = w * h;
+    for (let i = 0; i < 256; i++) lut[i] = 0xFF000000 | u8[n + i * 3 + 2] << 16 | u8[n + i * 3 + 1] << 8 | u8[n + i * 3];
+    for (let i = 0; i < n; i++) rgba[i] = lut[u8[i]];
+    toWorker({ type: 'frameback', buf }, [buf]);
     srcCtx.putImageData(img, 0, 0);
     draw();
   }
@@ -199,12 +203,18 @@ function download(path, data) {
 
 // for tests (webdrive.mjs): latest emulator statistics
 let stats = null;
-function getStats() { toWorker({ type: 'stats' }); return new Promise((r) => { statsWaiter = r; }); }
+function getStats() {
+  toWorker({ type: 'stats' });
+  return Promise.race([new Promise((r) => { statsWaiter = r; }), new Promise((r) => setTimeout(() => r({ noReply: true }), 3000))]);
+}
 let statsWaiter = null;
 
 worker.onmessage = (e) => {
   const m = e.data;
-  if (m.type === 'frame') { pending = m; if (!running) { running = true; layout(); } }
+  if (m.type === 'frame') {
+    if (pending) toWorker({ type: 'frameback', buf: pending.buf }, [pending.buf]);   // superseded before it was drawn
+    pending = m; if (!running) { running = true; layout(); }
+  }
   else if (m.type === 'status') { status(m.text); if (m.text && /quit|stopped|Could not/.test(m.text)) running = false; }
   else if (m.type === 'list') fileList(m.files);
   else if (m.type === 'file') download(m.path, m.data);
@@ -236,3 +246,5 @@ window.addEventListener('dragover', (e) => e.preventDefault());
 window.addEventListener('drop', (e) => { e.preventDefault(); upload(e.dataTransfer.files); });
 layout();
 requestAnimationFrame(paint);
+// offline use and "Install app": cache the files once they have been loaded online
+if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch((e) => console.warn('no offline cache:', e));
