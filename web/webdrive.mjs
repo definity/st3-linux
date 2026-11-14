@@ -3,7 +3,7 @@
 //   STEPS: space-separated tokens:  wait:MS  key:NAME (KeyboardEvent.code, e.g. KeyL, F5, ArrowDown, Enter, Space)
 //          ctrl:NAME alt:NAME shift:NAME  type:TEXT  shot:NAME  eval:JS
 import { spawn } from 'node:child_process';
-import { writeFileSync, mkdtempSync } from 'node:fs';
+import { writeFileSync, mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -43,12 +43,19 @@ const send = (method, params = {}) => new Promise((r) => { const id = ++seq; pen
 const KEYS = { Space: [' ', 32], Enter: ['Enter', 13], Escape: ['Escape', 27], Tab: ['Tab', 9], Backspace: ['Backspace', 8],
   ArrowUp: ['ArrowUp', 38], ArrowDown: ['ArrowDown', 40], ArrowLeft: ['ArrowLeft', 37], ArrowRight: ['ArrowRight', 39],
   PageUp: ['PageUp', 33], PageDown: ['PageDown', 34], Home: ['Home', 36], End: ['End', 35], Delete: ['Delete', 46], Insert: ['Insert', 45] };
+const PUNCT = { Minus: ['-', '_', 189], Equal: ['=', '+', 187], BracketLeft: ['[', '{', 219], BracketRight: [']', '}', 221],
+  Backslash: ['\\', '|', 220], Semicolon: [';', ':', 186], Quote: ["'", '"', 222], Backquote: ['`', '~', 192],
+  Comma: [',', '<', 188], Period: ['.', '>', 190], Slash: ['/', '?', 191],
+  NumpadAdd: ['+', '+', 107], NumpadSubtract: ['-', '-', 109], NumpadMultiply: ['*', '*', 106], NumpadDivide: ['/', '/', 111],
+  NumpadEnter: ['Enter', 'Enter', 13] };
 function keyInfo(code, shift) {
   if (KEYS[code]) return KEYS[code];
   let m;
   if ((m = /^F(\d+)$/.exec(code))) return [code, 111 + +m[1]];
   if ((m = /^Key([A-Z])$/.exec(code))) return [shift ? m[1] : m[1].toLowerCase(), m[1].charCodeAt(0)];
   if ((m = /^Digit(\d)$/.exec(code))) return [shift ? ')!@#$%^&*('[+m[1]] : m[1], 48 + +m[1]];
+  if ((m = /^Numpad(\d)$/.exec(code))) return [m[1], 96 + +m[1]];      // NumLock on
+  if (PUNCT[code]) return [PUNCT[code][shift ? 1 : 0], PUNCT[code][2]];
   return [code, 0];
 }
 async function press(code, mods = 0) {   // mods: 1 alt, 2 ctrl, 8 shift
@@ -68,6 +75,23 @@ for (const tok of steps.split(' ').filter(Boolean)) {
   const [cmd, ...rest] = tok.split(':'); const arg = rest.join(':');
   if (cmd === 'wait') await sleep(+arg);
   else if (cmd === 'key') await press(arg);
+  else if (cmd === 'keytest') {                // keytest:FILE  — table of [code, mods, expected BIOS code(s)]
+    const table = JSON.parse(readFileSync(arg, 'utf8'));
+    await send('Runtime.evaluate', { expression: `window.__keys = []; worker.postMessage = ((orig) => (m, t) => {
+      if (m && m.type === 'key') { window.__keys.push(m.k); return; } return orig.call(worker, m, t); })(worker.postMessage); 1` });
+    let bad = 0;
+    for (const [code, mods, want] of table) {
+      await send('Runtime.evaluate', { expression: 'window.__keys.length = 0' });
+      const seqs = Array.isArray(code) ? code : [[code, mods]];
+      for (const [c, md] of seqs) await press(c, md);
+      const got = (await send('Runtime.evaluate', { expression: 'window.__keys.slice()', returnByValue: true })).result.result.value;
+      const exp = (Array.isArray(want) ? want : [want]).map((x) => parseInt(x, 16));
+      const ok = got.length === exp.length && got.every((v, i) => v === exp[i]);
+      if (!ok) bad++;
+      logs.push(`${ok ? 'ok  ' : 'BAD '} ${JSON.stringify(code)} mods=${mods} want=${exp.map((x) => x.toString(16).padStart(4, '0'))} got=${got.map((x) => x.toString(16).padStart(4, '0'))}`);
+    }
+    logs.push(`keytest: ${table.length - bad}/${table.length} ok`);
+  }
   else if (cmd === 'reload') { await send('Page.reload'); await sleep(1500); }
   else if (cmd === 'ctrl') await press(arg, 2);
   else if (cmd === 'alt') await press(arg, 1);
