@@ -211,3 +211,16 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   past loop end) runs on instrument 21 (looped) through 0000:0000, overwrites the IVT and ST3's code at load+78h ->
   far call into garbage.  An ST3 bug with a broken file; real hardware would crash too.  Found with a new jump-history
   ring in the CPU (last 256 non-sequential transfers, dumped to the log on a CPU error; ~3% slower).
+- [w1] 2026-11-14 WEBASSEMBLY (branch web).  Emscripten 7.0.0 via emsdk (outside the repo).  web/: st3web.c (C API over
+  the unchanged core: st3_init/frame/render/key/shift/audio_take), st3-worker.js (emulator on a Web Worker, C:\ST3 =
+  IDBFS seeded from preloaded dist/s, dist/i, ST3.SET, ########.ST3; saves every 5 s), audio-worklet.js (48 kHz
+  player fed directly by the worker over a MessagePort; reports queue depth = pacing clock, target 0.1 s; underrun
+  hold+decay), st3.js (KeyboardEvent -> BIOS codes incl. Ctrl/Alt/F-key/keypad tables, live shift flags from real
+  key up/down, Ctrl-F prefix, canvas at 4:3 via integer nearest upscale + smooth downscale, upload/download,
+  fullscreen + keyboard.lock, beforeunload guard because Chrome owns Ctrl-W = ST3 Save As).  Output 371 KB wasm +
+  3.1 MB data.  First version ran everything on the main thread; moved to a worker so drawing/saving can't starve
+  audio.  web/webdrive.mjs = headless Chrome via DevTools protocol (real key events, screenshots, stats, reload).
+  Lesson: killing only Chrome's parent leaked renderer processes that piled up and starved later runs (load 4.4,
+  multi-second stalls, misleading underruns) -> webdrive kills the process group.  Results (headless, software
+  rendering in the Crostini container): ARMANI loads via Ctrl-L/Alt-G, plays with Track-5, 0 underruns over 15-30 s,
+  emulator uses 36-39% of one core, worst worker gap ~30 ms; Ctrl-F,3 = F3; uploaded song persists across reload.
