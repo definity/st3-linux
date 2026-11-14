@@ -2,6 +2,7 @@
  * An emulated 386/VGA/SoundBlaster-Pro PC with BIOS/DOS HLE runs the original (unpacked) ST3.EXE. */
 #include "machine.h"
 #include "render.h"
+#include "gfx.h"
 #include "audio.h"
 #define AUDIO_TARGET_MS 70.0
 #include "keys.h"
@@ -27,7 +28,9 @@ static Audio A;
 static struct termios tio_saved;
 static int tio_ok;
 static volatile sig_atomic_t winch = 1, want_quit;
-static int term_rows = 24, term_cols = 80;
+static int term_rows = 24, term_cols = 80, term_xpix, term_ypix;
+static Gfx G;
+static VgaFrame VF;
 
 static double now(void) { struct timespec t; clock_gettime(CLOCK_MONOTONIC, &t); return t.tv_sec + t.tv_nsec / 1e9; }
 
@@ -136,7 +139,7 @@ static void parse_input(int flush_esc) {
 
 static void get_winsize(void) {
     struct winsize ws;
-    if (!ioctl(1, TIOCGWINSZ, &ws) && ws.ws_row && ws.ws_col) { term_rows = ws.ws_row; term_cols = ws.ws_col; }
+    if (!ioctl(1, TIOCGWINSZ, &ws) && ws.ws_row && ws.ws_col) { term_rows = ws.ws_row; term_cols = ws.ws_col; term_xpix = ws.ws_xpixel; term_ypix = ws.ws_ypixel; }
 }
 
 static void pcm_sink(void *ud, const int16_t *f, int n) { audio_write((Audio *)ud, f, n); }
@@ -151,7 +154,10 @@ static void usage(void) {
         "                  default: \"pw-play -a --format s16 --rate 48000 --channels 2 --latency 60ms -\"\n"
         "  --mips N        emulated CPU speed in million instructions/s (default 25)\n"
         "  --exe FILE      run another (unpacked) ST3 executable instead of the built-in one\n"
-        "  --glyphs MODE   st3 (default) | blocks\n"
+        "  --gfx MODE      text (default): characters and colors | pixel-exact VGA picture via terminal graphics:\n"
+        "                  iterm (iTerm2/hterm/WezTerm inline images) | kitty | sixel\n"
+        "  --fps N         picture updates per second in graphics modes (default 20)\n"
+        "  --glyphs MODE   text mode glyphs: st3 (default) | blocks\n"
         "  --log FILE      write emulator debug log\n"
         "keys: as in DOS ST3 (F1..F10, Shift-F9 setup, Ctrl-L load, F5 play, F8 stop, Ctrl-Q quit).\n"
         "      Ctrl-] leaves the emulator immediately. Terminal must be at least 80x50.\n");
@@ -163,13 +169,15 @@ int main(int argc, char **argv) {
     static char root[4096], args[256];
     if (!getcwd(root, sizeof root)) strcpy(root, ".");
     const char *audio_cmd = "pw-play -a --format s16 --rate 48000 --channels 2 --latency 60ms -";
-    const char *exe = NULL, *logp = NULL; int glyph_mode = 0, nosound = 0;
+    const char *exe = NULL, *logp = NULL; int glyph_mode = 0, nosound = 0, gfx_mode = GFX_TEXT; double gfx_fps = 20;
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--root") && i + 1 < argc) { if (!realpath(argv[++i], root)) { fprintf(stderr, "st3: bad --root\n"); return 1; } }
         else if (!strcmp(argv[i], "--no-sound")) nosound = 1;
         else if (!strcmp(argv[i], "--audio") && i + 1 < argc) audio_cmd = argv[++i];
         else if (!strcmp(argv[i], "--mips") && i + 1 < argc) cfg.mips = atof(argv[++i]);
         else if (!strcmp(argv[i], "--exe") && i + 1 < argc) exe = argv[++i];
+        else if (!strcmp(argv[i], "--gfx") && i + 1 < argc) { if ((gfx_mode = gfx_parse_mode(argv[++i])) < 0) { fprintf(stderr, "st3: --gfx text|iterm|kitty|sixel\n"); return 1; } }
+        else if (!strcmp(argv[i], "--fps") && i + 1 < argc) { gfx_fps = atof(argv[++i]); if (gfx_fps < 1) gfx_fps = 1; }
         else if (!strcmp(argv[i], "--glyphs") && i + 1 < argc) { i++; glyph_mode = !strcmp(argv[i], "blocks"); }
         else if (!strcmp(argv[i], "--log") && i + 1 < argc) logp = argv[++i];
         else if (!strcmp(argv[i], "--")) { for (int k = i + 1; k < argc; k++) { strcat(args, k > i + 1 ? " " : ""); strncat(args, argv[k], 100); } break; }
@@ -184,6 +192,7 @@ int main(int argc, char **argv) {
     if (!nosound && audio_open(&A, audio_cmd) == 0) { M.pcm_sink = pcm_sink; M.pcm_ud = &A; }
     if (term_setup()) return 1;
     render_init(&R);
+    gfx_init(&G, gfx_mode);
 
     double t0 = now(), t0_orig = t0, dropped_total = 0, last_render = 0; int font_seen = -1, charh_seen = -1;
     while (!M.exited && !want_quit) {
@@ -208,8 +217,16 @@ int main(int argc, char **argv) {
         if (wall - vt > 0.25) { dropped_total += (wall - vt) - 0.05; t0 += (wall - vt) - 0.05; }   /* host too slow: drop time */
         if (shift_clear_at && now() > shift_clear_at && M.kq_head == M.kq_tail) { M.shift_flags = 0; shift_clear_at = 0; }
 
-        if (winch) { winch = 0; get_winsize(); R.force = 1; write_all("\x1b[0m\x1b[2J", 8); }
-        if (wall - last_render >= 1.0 / 30 && !M.fontmode) {
+        if (winch) { winch = 0; get_winsize(); R.force = 1; G.force = 1; write_all("\x1b[0m\x1b[2J", 8); }
+        if (gfx_mode != GFX_TEXT && M.font_uploads > 0) {
+            /* pixel-exact picture (once ST3 has loaded its fonts; before that the text renderer shows DOS output) */
+            if (wall - last_render >= 1.0 / gfx_fps && !M.fontmode) {
+                vgafb_render(&M, &VF, (unsigned)(machine_vtime(&M) * 70.086));
+                size_t n = gfx_frame(&G, &VF, term_rows, term_cols, term_xpix, term_ypix);
+                if (n) write_all(G.out, n);
+                last_render = wall;
+            }
+        } else if (wall - last_render >= 1.0 / 30 && !M.fontmode) {
             int charh = M.mem[0x485] ? M.mem[0x485] : 16;
             if (M.font_uploads != font_seen || charh != charh_seen) {
                 render_build_map(&R, M.font, charh > 16 ? 16 : charh, glyph_mode);

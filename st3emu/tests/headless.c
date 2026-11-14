@@ -5,6 +5,7 @@
  * outputs: OUTPREFIX.wav, OUTPREFIX.json + OUTPREFIX.font (for tools/render.py), OUTPREFIX.log */
 #include "../src/machine.h"
 #include "../src/keys.h"
+#include "../src/vgafb.h"
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -63,5 +64,12 @@ int main(int argc, char **argv) {
     char p2[1024];
     snprintf(path, sizeof path, "%s.json", argv[5]); snprintf(p2, sizeof p2, "%s.font", argv[5]);
     machine_dump_vga_state(&M, path, p2);
+    {   /* exact VGA raster as a PPM */
+        static VgaFrame F; vgafb_render(&M, &F, 0);
+        snprintf(path, sizeof path, "%s.ppm", argv[5]);
+        FILE *pf = fopen(path, "wb");
+        if (pf) { fprintf(pf, "P6\n%d %d\n255\n", F.w, F.h);
+                  for (int i = 0; i < F.w * F.h; i++) fwrite(F.pal + F.pix[i] * 3, 1, 3, pf); fclose(pf); }
+    }
     return 0;
 }

@@ -69,7 +69,11 @@ static int int10(Machine *m, uint16_t *fl) {
         if (!(AL & 0x80)) for (int i = 0; i < 80 * 50; i++) ww(m, 0xB8000 + i * 2, 0x0720);
         m->video_dirty = 1; return 1;
     case 0x01: ww(m, BDA + 0x60, CX); m->crtc[0x0A] = CX >> 8; m->crtc[0x0B] = CX & 0xFF; return 1;
-    case 0x02: ww(m, BDA + 0x50, DX); m->video_dirty = 1; return 1;
+    case 0x02: {   /* set cursor position: BDA + CRTC cursor location (as the BIOS does) */
+        ww(m, BDA + 0x50, DX);
+        uint16_t loc = (DX >> 8) * 80 + (DX & 0xFF);
+        m->crtc[0x0E] = loc >> 8; m->crtc[0x0F] = loc & 0xFF;
+        m->video_dirty = 1; return 1; }
     case 0x03: set16(m, R_EDX, rw(m, BDA + 0x50)); set16(m, R_ECX, rw(m, BDA + 0x60)); return 1;
     case 0x05: return 1;
     case 0x06: case 0x07:
@@ -94,8 +98,10 @@ static int int10(Machine *m, uint16_t *fl) {
         }
         m->video_dirty = 1; return 1;
     case 0x11:
-        if (AL == 0x12 || AL == 0x02) { wb(m, BDA + 0x84, 49); ww(m, BDA + 0x85, 8); }
-        else if (AL == 0x14 || AL == 0x04 || AL == 0x11 || AL == 0x01) { wb(m, BDA + 0x84, 24); ww(m, BDA + 0x85, 16); }
+        /* ROM font load + mode recalc: character height goes to CRTC max scan line (and cursor shape), as the BIOS does */
+        if (AL == 0x12 || AL == 0x02) { wb(m, BDA + 0x84, 49); ww(m, BDA + 0x85, 8); m->crtc[9] = (m->crtc[9] & 0xE0) | 7; m->crtc[0x0A] = 6; m->crtc[0x0B] = 7; }
+        else if (AL == 0x14 || AL == 0x04) { wb(m, BDA + 0x84, 24); ww(m, BDA + 0x85, 16); m->crtc[9] = (m->crtc[9] & 0xE0) | 15; m->crtc[0x0A] = 13; m->crtc[0x0B] = 14; }
+        else if (AL == 0x11 || AL == 0x01) { wb(m, BDA + 0x84, 24); ww(m, BDA + 0x85, 14); m->crtc[9] = (m->crtc[9] & 0xE0) | 13; m->crtc[0x0A] = 11; m->crtc[0x0B] = 12; }
         else if (AL == 0x30) { set16(m, R_ECX, rw(m, BDA + 0x85)); set16(m, R_EDX, rb(m, BDA + 0x84)); }
         m->video_dirty = 1; return 1;
     case 0x12: if ((BX & 0xFF) == 0x10) { set16(m, R_EBX, 0x0003); set16(m, R_ECX, 0x0009); } return 1;

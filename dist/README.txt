@@ -33,7 +33,12 @@ Options
   --root DIR      use DIR as C:\ST3 instead of the current directory
   --no-sound      no audio          --audio CMD   custom audio sink (s16le, 48 kHz, stereo on stdin)
   --mips N        emulated CPU speed (default 25 million instructions/s)
-  --glyphs blocks draw every custom glyph as block graphics
+  --gfx MODE      pixel-exact VGA picture (640x400, ST3's own fonts, shown at 4:3) using terminal graphics:
+                  iterm  (iTerm2-style inline images: ChromeOS Terminal/hterm, iTerm2, WezTerm)
+                  kitty  (kitty, WezTerm, Ghostty, Konsole)      sixel  (foot, mlterm, xterm -ti vt340, Windows Terminal)
+                  text   (default: characters + colors, works everywhere)
+  --fps N         picture updates per second in --gfx modes (default 20; only changed frames are sent)
+  --glyphs blocks text mode: draw every custom glyph as block graphics
   --log FILE      emulator debug log
   ST3_AUDIO_MS=N  (environment) audio kept queued ahead, default 70; 0 = none
   -- ARGS         pass switches to ST3 itself (e.g.  -- -p  to pause after startup messages)

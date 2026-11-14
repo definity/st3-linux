@@ -130,3 +130,12 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   ST3 executes a stray INT3 (CC at 2CFD:4ECC) in its FM note-on routine; protector restores IVT, so DOS default IRET -> no-op.
   tools/mkfmsong.py writes FMTEST.S3M (original test song: 4 FM patches + BD/SD/HH, Am-F-C-G). ST3 loads/plays it:
   VU on A1-A4/AB/AS/AH, Goertzel shows chord tones A2/A4/C5/E5 >> off-key bins; no clipping (peak 20970). 0 underruns realtime.
+- [m4c] 2026-11-14 PIXEL-EXACT DISPLAY. ST3 programs SEQ1=01 (8-dot), misc 63h (25 MHz), CRTC9=47h (8-line cells, 400 lines),
+  attr mode 04h (LGE, blink off). vga_init now loads the standard mode-3 register set; INT10/02 sets CRTC 0E/0F (ST3 hides the
+  cursor with row FFh; on the title it is still at row 5 col 0 and blinks, as on hardware); INT10/11 sets CRTC9 + cursor shape.
+  src/vgafb.c: hardware-style raster (CRTC geometry, 8/9 dots + LGE, SEQ3 map select, blink /32, cursor /16, attr palette
+  -> DAC idx; DAC 6->8 bit rounded). Matches tools/render.py within +-1 (ref truncates) on all 256000 px.
+  src/gfx.c: --gfx iterm (OSC 1337 PNG) | kitty (APC G PNG, image id replaced) | sixel; 4:3 cell box from TIOCGWINSZ pixels
+  (assume 1:2 cells if unknown); PNG = indexed + Up filter + zlib(1), pre-scaled 2x nearest. Only changed frames sent.
+  tests/gfxcheck.py decodes the last frame of each protocol from a pty capture: 0 mismatching pixels for all three.
+  Rates: ~5 fps / 205 KiB/s (iterm) during ARMANI playback; realtime lock unaffected. tools/gfxprobe.sh = terminal probe for user.

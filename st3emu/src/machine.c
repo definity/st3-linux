@@ -138,6 +138,10 @@ void machine_dump_vga_state(Machine *m, const char *json_path, const char *font_
     for (int i = 0; i < 21; i++) fprintf(f, "%s%d", i ? "," : "", m->attr[i]);
     fprintf(f, "], \"rows\": %d, \"text\": [", m->mem[0x484] + 1);
     for (int i = 0; i < 80 * 50 * 2; i++) fprintf(f, "%s%d", i ? "," : "", m->mem[0xB8000 + i]);
-    fprintf(f, "], \"cursor\": %d, \"charh\": %d, \"seq3\": %d}\n", rw(m, 0x450), rw(m, 0x485), m->seq[3]);
+    fprintf(f, "], \"cursor\": %d, \"charh\": %d, \"seq3\": %d, \"misc\": %d", rw(m, 0x450), rw(m, 0x485), m->seq[3], m->misc_out);
+    fprintf(f, ", \"seq\": ["); for (int i = 0; i < 8; i++) fprintf(f, "%s%d", i ? "," : "", m->seq[i]);
+    fprintf(f, "], \"crtc\": ["); for (int i = 0; i < 25; i++) fprintf(f, "%s%d", i ? "," : "", m->crtc[i]);
+    fprintf(f, "], \"gc\": ["); for (int i = 0; i < 9; i++) fprintf(f, "%s%d", i ? "," : "", m->gc[i]);
+    fprintf(f, "]}\n");
     fclose(f);
 }
