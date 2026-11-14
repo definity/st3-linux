@@ -12,7 +12,7 @@ export W OUT KEYS
 
 one() {
     song=$1; base=$(basename "$song"); tag=${base%.*}; d=$OUT/run/$tag
-    mkdir -p "$d"; cp "$W/sandbox/ST3.SET" "$song" "$d/"
+    mkdir -p "$d"; cp "$W/dist/ST3.SET" "$song" "$d/"
     (cd "$d" && timeout 300 "$W/st3emu/st3head" . "$W/ST3U.EXE" 40 "$KEYS" "$OUT/$tag" >"$OUT/$tag.stderr" 2>&1)
     rc=$?
     log=$OUT/$tag.log
