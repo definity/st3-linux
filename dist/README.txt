@@ -35,6 +35,11 @@ Chromebook notes
     horizontal lines as it updates (the Terminal repaints more often when focused).  Unfocused it is clean, and
     other sixel terminals (e.g. xterm -ti vt340) show no lines.  --gfx text avoids it; --fps 10 may reduce it.
 
+Long file names
+  DOS (and so ST3) only knows 8.3 names like ARMANI.S3M.  Files with longer names show up in ST3 the way Windows 95
+  showed them to DOS programs, as short aliases: "Armani Showers (Edge, 1994).s3m" appears as ARMANI~1.S3M.  Loading
+  or saving the alias uses the real file, which keeps its long name.
+
 Options
   --root DIR      use DIR as C:\ST3 instead of the current directory
   --no-ems        no expanded memory (ST3 then holds samples only in its ~200K of conventional memory)

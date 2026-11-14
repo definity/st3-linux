@@ -105,6 +105,10 @@ void dos_init(Machine *m) {
 }
 
 /* ------------------------------------------------------------------ paths */
+static int valid83(const char *n);
+static void split83(const char *n, char *b, char *e);
+typedef struct { char host[256]; char dos[13]; } Alias;
+static int dir_aliases(const char *dir, Alias **out);
 static void host_path(Machine *m, const char *dos, char *out, size_t outsz) {
     char p[300]; strncpy(p, dos, sizeof p - 1); p[sizeof p - 1] = 0;
     for (char *q = p; *q; q++) if (*q == '/') *q = '\\';
@@ -128,6 +132,11 @@ static void host_path(Machine *m, const char *dos, char *out, size_t outsz) {
     for (int i = 0; i < nc; i++) {
         DIR *d = opendir(out); char found[256] = "";
         if (d) { struct dirent *e; while ((e = readdir(d))) if (!strcasecmp(e->d_name, comps[i])) { strcpy(found, e->d_name); break; } closedir(d); }
+        if (!found[0] && strchr(comps[i], '~')) {   /* a short alias for a long host name (MYSONG~1.S3M) */
+            Alias *al = NULL; int na = dir_aliases(out, &al);
+            for (int k = 0; k < na; k++) if (!strcasecmp(al[k].dos, comps[i])) { strcpy(found, al[k].host); break; }
+            free(al);
+        }
         if (!found[0]) { for (int k = 0; comps[i][k]; k++) found[k] = toupper((unsigned char)comps[i][k]), found[k + 1] = 0; }
         size_t l = strlen(out); snprintf(out + l, outsz - l, "/%s", found);
     }
@@ -151,6 +160,57 @@ static void split83(const char *n, char *b, char *e) {
     if (dot) for (const char *q = dot + 1; *q && i < 3; q++) e[i++] = toupper((unsigned char)*q);
     e[i] = 0;
 }
+/* Windows-95-style short names for host files whose names DOS can't hold: "My Song (final).s3m" -> MYSONG~1.S3M.
+ * Derived per directory and deterministic: the long names, sorted, each take the first STEM~N that no 8.3 name or
+ * earlier alias in that directory uses.  ST3 lists, loads and saves them like any other file. */
+static void alias_clean(const char *s, size_t n, char *out, int max) {
+    int k = 0;
+    for (size_t i = 0; i < n && s[i] && k < max; i++) {
+        int c = toupper((unsigned char)s[i]);
+        if ((c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || (c && strchr("_-!#$%&'()@^`{}~", c))) out[k++] = (char)c;
+    }
+    out[k] = 0;
+}
+static int alias_cmp(const void *a, const void *b) { return strcmp(((const Alias *)a)->host, ((const Alias *)b)->host); }
+static int dir_aliases(const char *dir, Alias **out) {
+    *out = NULL;
+    DIR *d = opendir(dir); if (!d) return 0;
+    char (*taken)[13] = NULL; int nt = 0, ct = 0; Alias *al = NULL; int na = 0, ca = 0;
+    struct dirent *e;
+    while ((e = readdir(d))) {
+        const char *nm = e->d_name;
+        if (nm[0] == '.') continue;
+        if (valid83(nm)) {
+            char b[16], x[16]; split83(nm, b, x);
+            if (nt == ct) { ct = ct ? ct * 2 : 64; taken = realloc(taken, ct * sizeof *taken); }
+            snprintf(taken[nt++], 13, x[0] ? "%s.%s" : "%s", b, x);
+        } else if (strlen(nm) < sizeof al->host) {
+            if (na == ca) { ca = ca ? ca * 2 : 16; al = realloc(al, ca * sizeof *al); }
+            snprintf(al[na].host, sizeof al->host, "%s", nm); al[na].dos[0] = 0; na++;
+        }
+    }
+    closedir(d);
+    if (na) qsort(al, na, sizeof *al, alias_cmp);
+    for (int a = 0; a < na; a++) {
+        const char *h = al[a].host, *dot = strrchr(h, '.');
+        char b[64], x[8];
+        alias_clean(h, dot && dot != h ? (size_t)(dot - h) : strlen(h), b, 63);
+        alias_clean(dot && dot != h ? dot + 1 : "", 3, x, 3);
+        if (!b[0]) strcpy(b, "FILE");
+        for (int i = 1; i < 100000; i++) {
+            char tail[8], cand[16]; snprintf(tail, sizeof tail, "~%d", i);
+            int keep = 8 - (int)strlen(tail); if (keep > 6) keep = 6;
+            snprintf(cand, sizeof cand, x[0] ? "%.*s%s.%s" : "%.*s%s", keep, b, tail, x);
+            int used = 0;
+            for (int k = 0; k < nt && !used; k++) used = !strcmp(taken[k], cand);
+            for (int k = 0; k < a && !used; k++) used = !strcmp(al[k].dos, cand);
+            if (!used) { snprintf(al[a].dos, sizeof al->dos, "%s", cand); break; }
+        }
+    }
+    free(taken);
+    *out = al; return na;
+}
+
 static int match_part(const char *n, const char *p, int len) {
     char pp[16]; int k = 0;
     for (int i = 0; p[i] && k < len; i++) { if (p[i] == '*') { while (k < len) pp[k++] = '?'; break; } pp[k++] = p[i]; }
@@ -177,8 +237,8 @@ static void dos_time(time_t t, uint16_t *tm, uint16_t *dt) {
     *dt = ((lt->tm_year - 80) << 9) | ((lt->tm_mon + 1) << 5) | lt->tm_mday;
 }
 
-static int fill_dta(Machine *m, const char *dir, const char *name) {
-    char full[600]; snprintf(full, sizeof full, "%s/%s", dir, name);
+static int fill_dta(Machine *m, const char *dir, const char *host, const char *name) {
+    char full[900]; snprintf(full, sizeof full, "%s/%s", dir, host);
     struct stat st; if (stat(full, &st)) return 0;
     uint32_t a = ((uint32_t)m->dta_seg << 4) + m->dta_off;
     uint16_t t, d; dos_time(st.st_mtime, &t, &d);
@@ -190,7 +250,7 @@ static int fill_dta(Machine *m, const char *dir, const char *name) {
     return 1;
 }
 
-static struct { char dir[512]; char (*names)[64]; int n; } fslot[8];
+static struct { char dir[512]; Alias *names; int n; } fslot[8];   /* .host = name on disk, .dos = name ST3 sees */
 static int fslot_next;
 
 static int find_next(Machine *m) {
@@ -198,7 +258,7 @@ static int find_next(Machine *m) {
     if (rb(m, a) != 0xA5) return 0;
     int slot = rb(m, a + 1) & 7; int pos = rw(m, a + 2);
     while (pos < fslot[slot].n) {
-        int okk = fill_dta(m, fslot[slot].dir, fslot[slot].names[pos]);
+        int okk = fill_dta(m, fslot[slot].dir, fslot[slot].names[pos].host, fslot[slot].names[pos].dos);
         pos++; ww(m, a + 2, pos);
         if (okk) return 1;
     }
@@ -218,21 +278,29 @@ static int find_first(Machine *m, const char *dospat, uint16_t attr) {
     DIR *d = opendir(hp); if (!d) return -1;
     int cap = 0; struct dirent *e;
     int atroot = !strcmp(hp, m->cfg.root);
-    char (*list)[64] = NULL; int n = 0;
+    Alias *list = NULL; int n = 0;
+    Alias *al = NULL; int na = -1;                /* aliases for long names, built on first need */
     while ((e = readdir(d))) {
-        const char *nm = e->d_name;
-        if (!valid83(nm)) continue;
+        const char *nm = e->d_name, *dn = nm;
+        if (!valid83(nm)) {
+            if (nm[0] == '.') continue;
+            if (na < 0) na = dir_aliases(hp, &al);
+            dn = NULL;
+            for (int k = 0; k < na; k++) if (!strcmp(al[k].host, nm)) { dn = al[k].dos; break; }
+            if (!dn || !dn[0]) continue;
+        }
         if ((!strcmp(nm, ".") || !strcmp(nm, "..")) && (atroot || !(attr & 0x10))) continue;
         char full[1200]; snprintf(full, sizeof full, "%s/%s", hp, nm);
         struct stat st; if (stat(full, &st)) continue;
         if (S_ISDIR(st.st_mode) && !(attr & 0x10)) continue;
-        if (!match83(nm, pat) && strcmp(nm, ".") && strcmp(nm, "..")) continue;
-        if (n == cap) { cap = cap ? cap * 2 : 64; list = realloc(list, cap * 64); }
-        snprintf(list[n++], 64, "%s", nm);
+        if (!match83(dn, pat) && strcmp(nm, ".") && strcmp(nm, "..")) continue;
+        if (n == cap) { cap = cap ? cap * 2 : 64; list = realloc(list, cap * sizeof *list); }
+        snprintf(list[n].host, sizeof list->host, "%s", nm); snprintf(list[n].dos, sizeof list->dos, "%s", dn); n++;
     }
     closedir(d);
-    for (int i = 1; i < n; i++) for (int j = i; j > 0 && strcasecmp(list[j - 1], list[j]) > 0; j--) {   /* sort: . .. first */
-        char t[64]; memcpy(t, list[j], 64); memcpy(list[j], list[j - 1], 64); memcpy(list[j - 1], t, 64);
+    free(al);
+    for (int i = 1; i < n; i++) for (int j = i; j > 0 && strcasecmp(list[j - 1].dos, list[j].dos) > 0; j--) {   /* sort: . .. first */
+        Alias t = list[j]; list[j] = list[j - 1]; list[j - 1] = t;
     }
     fslot[slot].names = list; fslot[slot].n = n;
     uint32_t a = ((uint32_t)m->dta_seg << 4) + m->dta_off;
