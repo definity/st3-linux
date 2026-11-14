@@ -10,8 +10,19 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <time.h>
+#include <sys/ioctl.h>
 
 #define OUT_RATE 48000
+
+static double mono_now(void) { struct timespec t; clock_gettime(CLOCK_MONOTONIC, &t); return t.tv_sec + t.tv_nsec * 1e-9; }
+
+double audio_queued_ms(Audio *a) {
+    int n = 0;
+    if (a->fd < 0 || ioctl(a->fd, FIONREAD, &n) < 0) return 0;
+    return n / (OUT_RATE * 4 / 1000.0);
+}
+int audio_active(Audio *a) { return a->fd >= 0 && a->on && mono_now() - a->last_feed < 0.2; }
 
 int audio_open(Audio *a, const char *cmd) {
     memset(a, 0, sizeof *a);
@@ -42,33 +53,43 @@ void audio_close(Audio *a) {
 
 static void flush_out(Audio *a) {
     if (a->fd < 0 || !a->on) { a->on_n = 0; return; }
-    int off = 0;
-    while (off < a->on_n) {
-        ssize_t w = write(a->fd, (char *)a->obuf + off, a->on_n - off);
-        if (w <= 0) { if (errno == EAGAIN) a->dropped += a->on_n - off; break; }
-        off += w;
+    int off = 0, bytes = a->on_n * (int)sizeof a->obuf[0];   /* on_n counts samples, write() wants bytes */
+    while (off < bytes) {
+        ssize_t w = write(a->fd, (char *)a->obuf + off, bytes - off);
+        if (w <= 0) { if (errno == EAGAIN) a->dropped += bytes - off; break; }
+        off += w; a->written += w;
     }
     a->on_n = 0;
 }
 
-/* feed DAC bytes at input rate; resample with linear interpolation */
+/* resample one input frame (linear interpolation) into the output buffer */
+static void push_frame(Audio *a, float l, float r, double step) {
+    while (a->phase <= 1.0) {
+        float ol = a->pl + (l - a->pl) * (float)a->phase, orr = a->pr + (r - a->pr) * (float)a->phase;
+        int sl = (int)(ol * 30000.0f * a->volume), sr = (int)(orr * 30000.0f * a->volume);
+        if (sl > 32767) sl = 32767; if (sl < -32768) sl = -32768;
+        if (sr > 32767) sr = 32767; if (sr < -32768) sr = -32768;
+        a->obuf[a->on_n++] = (int16_t)sl; a->obuf[a->on_n++] = (int16_t)sr;
+        if (a->on_n >= (int)(sizeof a->obuf / sizeof a->obuf[0])) flush_out(a);
+        a->phase += step;
+    }
+    a->phase -= 1.0;
+    a->pl = l; a->pr = r;
+}
+
+/* feed DAC bytes (8-bit unsigned; stereo = L,R interleaved) at input frame rate. The emulator hands over a byte
+ * or two at a time, so a stereo frame may be split across calls: keep the partial frame in a->part. */
 void audio_feed(Audio *a, const uint8_t *d, int n, double rate, int stereo) {
-    int ch = stereo ? 2 : 1, frames = n / ch;
+    int ch = stereo ? 2 : 1;
     double step = rate / OUT_RATE;
-    for (int i = 0; i < frames; i++) {
-        float l = (d[i * ch] - 128) / 128.0f, r = stereo ? (d[i * ch + 1] - 128) / 128.0f : l;
-        /* emit output samples whose time falls between previous input frame and this one */
-        while (a->phase <= 1.0) {
-            float ol = a->pl + (l - a->pl) * (float)a->phase, orr = a->pr + (r - a->pr) * (float)a->phase;
-            int sl = (int)(ol * 30000.0f * a->volume), sr = (int)(orr * 30000.0f * a->volume);
-            if (sl > 32767) sl = 32767; if (sl < -32768) sl = -32768;
-            if (sr > 32767) sr = 32767; if (sr < -32768) sr = -32768;
-            a->obuf[a->on_n++] = (int16_t)sl; a->obuf[a->on_n++] = (int16_t)sr;
-            if (a->on_n >= (int)(sizeof a->obuf / sizeof a->obuf[0])) flush_out(a);
-            a->phase += step;
-        }
-        a->phase -= 1.0;
-        a->pl = l; a->pr = r;
+    a->last_feed = mono_now(); a->in_bytes += n; a->in_rate = rate; a->in_stereo = stereo;
+    if (stereo != a->in_stereo_prev) { a->part_n = 0; a->in_stereo_prev = stereo; }
+    for (int i = 0; i < n; i++) {
+        a->part[a->part_n++] = d[i];
+        if (a->part_n < ch) continue;
+        a->part_n = 0;
+        float l = (a->part[0] - 128) / 128.0f, r = stereo ? (a->part[1] - 128) / 128.0f : l;
+        push_frame(a, l, r, step);
     }
     flush_out(a);
 }

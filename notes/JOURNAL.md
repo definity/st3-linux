@@ -106,3 +106,16 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   Audio: captured resampled stream = music; realtime lock exact (vtime==wall over 25s), 0 dropped bytes; pw-play accepts stream.
   Fix: font block1 glyphs identical to block0 map like block0 (bright text uses block1 after 4th font upload).
   Not yet heard by a human. Open: sixel pixel mode (optional), EMS (optional), OPL2 FM (AdLib songs), Route B.
+- [m4a] 2026-11-14 USER TEST of Route A: "sound isn't smooth, bad reception staccato" + "tracker not viewable while playing".
+  Repo put under git (work/, .gitignore excludes pylib, build products, out/, sandbox/, *.wav).
+  AUDIO root causes (both in audio.c, never exercised by headless tests which bypass it):
+   1. flush_out wrote on_n BYTES but on_n counts int16 SAMPLES -> only first half of every buffer reached pw-play.
+   2. sb_update hands audio_feed 1-2 bytes per call; frames=n/2 dropped odd bytes in stereo (17% loss + L/R swaps).
+      Fix: carry partial frame (a->part).
+   3. No lead: wall-locked production left ~0 queued -> 1-5% period underruns. Fix: while audio active, pace on
+      pipe fill (FIONREAD) to 70 ms, capped wall+0.15 / floored wall-0.2 (ST3_AUDIO_MS env overrides).
+  Tool: tests/audiosink.py = fake 48k device (fixed quanta, real-time), counts underruns. Before: 99.9% underruns;
+  after: 0 underruns (1024 and 2048 quanta), output 192000 B/s exact; real pw-play queue 47-70 ms, 0 drops. User heard it: "sounds awesome".
+  DISPLAY: not a bug. F5 Info Screen bottom window defaults to "None"; PgUp/PgDn selects Track-5/8/18 (manual 3.5).
+  The user's "magic key" was likely PgDn. VU bars verified moving (out/d_info.png). CRTC start address never written (no page flip).
+  Side project requested: WebAssembly build running in Chrome (after Route A is solid).

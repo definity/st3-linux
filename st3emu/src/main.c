@@ -3,6 +3,7 @@
 #include "machine.h"
 #include "render.h"
 #include "audio.h"
+#define AUDIO_TARGET_MS 70.0
 #include "keys.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -187,8 +188,19 @@ int main(int argc, char **argv) {
     double t0 = now(), t0_orig = t0, dropped_total = 0, last_render = 0; int font_seen = -1, charh_seen = -1;
     while (!M.exited && !want_quit) {
         double wall = now() - t0, vt = machine_vtime(&M);
-        if (vt < wall) {
-            double target = wall < vt + 0.02 ? wall : vt + 0.02;
+        /* Pacing.  Silent: lock virtual time to the wall clock.  While sound plays, the audio device is the clock:
+         * keep ~AUDIO_TARGET_MS queued in the sink pipe (running up to 150 ms ahead of the wall clock), so the
+         * sink never asks for a period we haven't produced yet.  Never fall more than 0.2 s behind the wall clock. */
+        double target = wall;
+        static double tgt_ms = -1; if (tgt_ms < 0) tgt_ms = getenv("ST3_AUDIO_MS") ? atof(getenv("ST3_AUDIO_MS")) : AUDIO_TARGET_MS;
+        if (tgt_ms > 0 && audio_active(&A)) {
+            double q = audio_queued_ms(&A);
+            target = q < tgt_ms ? vt + (tgt_ms - q) / 1000.0 : vt;
+            if (target > wall + 0.15) target = wall + 0.15;
+            if (target < wall - 0.2) target = wall - 0.2;
+        }
+        if (target > vt + 0.02) target = vt + 0.02;
+        if (vt < target) {
             uint64_t n = (uint64_t)((target - vt) * cfg.mips * 1e6) + 1;
             if (machine_run(&M, n) < 0) break;
         }

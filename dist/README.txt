@@ -16,9 +16,11 @@ Quick start
   any key ........ leave the title screen
   Ctrl-L ......... load a module.  Alt-G, type a directory (e.g.  S  ), Enter: change directory.
                    Arrow keys + Enter pick a file; answer Y to "Current song is about to be erased".
-  F5 / F8 ........ play / stop          F1..F4 ..... orders / patterns / instruments / library
+  F5 / F8 ........ play (opens the Info Screen) / stop          F1..F4 ..... orders / patterns / instruments / library
   F9 / Shift-F9 .. status / setup        F10 ........ quick help        Ctrl-Q, Y ... quit
   Ctrl-] ......... leave the emulator immediately (emergency exit)
+  Info Screen (F5): PgUp/PgDn picks the bottom window (None, Track-5/8/18 = scrolling pattern view, scopes,
+                   note spectrum); Ctrl-T cycles 5/8/18-channel tracks; Left/Right scroll channels.
   Full manual: docs/ST3.DOC.txt   File formats: docs/TECH.DOC.txt
 
 Chromebook notes
@@ -32,6 +34,7 @@ Options
   --mips N        emulated CPU speed (default 25 million instructions/s)
   --glyphs blocks draw every custom glyph as block graphics
   --log FILE      emulator debug log
+  ST3_AUDIO_MS=N  (environment) audio kept queued ahead, default 70; 0 = none
   -- ARGS         pass switches to ST3 itself (e.g.  -- -p  to pause after startup messages)
 
 Files here
