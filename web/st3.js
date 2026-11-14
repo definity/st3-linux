@@ -147,8 +147,8 @@ const src = document.createElement('canvas'), srcCtx = src.getContext('2d');
 const mid = document.createElement('canvas'), midCtx = mid.getContext('2d');
 let img = null, pending = null;
 function layout() {
-  const dpr = window.devicePixelRatio || 1, bar = $('bar').offsetHeight;
-  const W = window.innerWidth, H = window.innerHeight - bar - 8;
+  const dpr = window.devicePixelRatio || 1, wrap = $('wrap');
+  const W = wrap.clientWidth, H = wrap.clientHeight - 4;   // the space left under the (possibly wrapped) top bar
   let w = W, h = Math.round(W * 3 / 4);
   if (h > H) { h = H; w = Math.round(H * 4 / 3); }
   screen.style.width = w + 'px'; screen.style.height = h + 'px';

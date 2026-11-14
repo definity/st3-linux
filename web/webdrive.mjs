@@ -98,6 +98,11 @@ for (const tok of steps.split(' ').filter(Boolean)) {
     }
     logs.push(`keytest: ${table.length - bad}/${table.length} ok`);
   }
+  else if (cmd === 'viewport') {               // viewport:WxH or WxH@DPR
+    const m = /^(\d+)x(\d+)(?:@([\d.]+))?$/.exec(arg);
+    await send('Emulation.setDeviceMetricsOverride', { width: +m[1], height: +m[2], deviceScaleFactor: +(m[3] || 1), mobile: false });
+    await sleep(300);
+  }
   else if (cmd === 'offline') {               // offline:1 cuts the network (service worker must serve the page), offline:0 restores
     await send('Network.enable');
     await send('Network.emulateNetworkConditions', { offline: arg === '1', latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
