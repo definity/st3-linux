@@ -12,11 +12,12 @@ for item in filter(None, sys.argv[4].split(';')):
     timeline.append((float(t), codecs.decode(k, 'unicode_escape').encode('latin-1')))
 cmd = sys.argv[sys.argv.index('--') + 1:]
 ROWS, COLS = 60, 100
+CW, CH = map(int, os.environ.get('GFXCHECK_CELL', '8x16').split('x'))   # cell size in pixels
 pid, fd = pty.fork()
 if pid == 0:
     os.environ['TERM'] = 'xterm-256color'; os.execv(cmd[0], cmd)
 ANSWER = os.environ.get('GFXCHECK_ANSWER')   # set: report 0 pixels and answer the cell-size / DA1 queries instead (like hterm)
-fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack('HHHH', ROWS, COLS, 0 if ANSWER else COLS * 8, 0 if ANSWER else ROWS * 16))
+fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack('HHHH', ROWS, COLS, 0 if ANSWER else COLS * CW, 0 if ANSWER else ROWS * CH))
 os.kill(pid, 28)
 buf = bytearray(); t0 = time.time(); ti = 0
 while time.time() - t0 < secs:
@@ -28,7 +29,7 @@ while time.time() - t0 < secs:
         except OSError: break
         if not d: break
         buf += d
-        if ANSWER and b'\x1b[16t' in d: os.write(fd, b'\x1b[6;16;8t')
+        if ANSWER and b'\x1b[16t' in d: os.write(fd, b'\x1b[6;%d;%dt' % (CH, CW))
         if ANSWER and b'\x1b[c' in d: os.write(fd, ANSWER.encode())
 try: os.write(fd, b'\x1d'); time.sleep(0.3)
 except OSError: pass
@@ -68,7 +69,7 @@ elif mode == 'kitty':
     w, h, rgb = png_decode(base64.b64decode(imgs[-1]))
 else:
     # composite every sixel at its cursor position on a ROWS*16 x COLS*8 canvas (partial updates repaint bands)
-    CW, CH = 8, 16; W, H = COLS * CW, ROWS * CH
+    W, H = COLS * CW, ROWS * CH; bad6 = 0
     canvas = bytearray(W * H * 3)
     six = re.findall(rb'\x1b\[(\d+);(\d+)H\x1bP0;1;0q(.*?)\x1b\\', bytes(buf), re.S)
     print('images', len(six), 'bytes per image avg', sum(len(x[2]) for x in six) // max(1, len(six)))
@@ -77,6 +78,7 @@ else:
         ox, oy = (int(pcol) - 1) * CW, (int(prow) - 1) * CH
         s = data.decode('latin-1')
         m = re.match(r'"1;1;(\d+);(\d+)', s); w, h = int(m.group(1)), int(m.group(2)); s = s[m.end():]
+        bad6 += h % 6 != 0
         minx = min(minx, ox); miny = min(miny, oy); maxx = max(maxx, ox + w); maxy = max(maxy, oy + h)
         cols = {}; x = y = 0; c = (0, 0, 0); i = 0
         while i < len(s):
@@ -99,6 +101,7 @@ else:
             x += rep
             i += 1
     w, h = maxx - minx, maxy - miny
+    print('sixels whose height is not a multiple of 6:', bad6)
     rgb = bytearray()
     for yy in range(miny, maxy): rgb += canvas[(yy * W + minx) * 3:(yy * W + maxx) * 3]
 open(outp, 'wb').write(b'P6\n%d %d\n255\n' % (w, h) + bytes(rgb))

@@ -44,6 +44,7 @@ int main(int argc, char **argv) {
     Wav wav = {0};
     M.pcm_sink = sink; M.pcm_ud = &wav;
     if (machine_load_exe(&M, argv[2])) { fprintf(stderr, "cannot load %s\n", argv[2]); return 1; }
+    if (!getenv("NOPATCH")) fprintf(stderr, "help patch: %s\n", st3_patch_help(&M) ? "not applied" : "applied");
     double secs = atof(argv[3]);
     KeyScript ks; keyscript_parse(&ks, argv[4]);
     clock_t t0 = clock();
@@ -64,6 +65,7 @@ int main(int argc, char **argv) {
     char p2[1024];
     snprintf(path, sizeof path, "%s.json", argv[5]); snprintf(p2, sizeof p2, "%s.font", argv[5]);
     machine_dump_vga_state(&M, path, p2);
+    if (getenv("DUMPMEM")) { FILE *mf = fopen(getenv("DUMPMEM"), "wb"); if (mf) { fwrite(MEM, 1, MEM_SIZE, mf); fclose(mf); } }
     {   /* exact VGA raster as a PPM */
         static VgaFrame F; vgafb_render(&M, &F, 0);
         snprintf(path, sizeof path, "%s.ppm", argv[5]);

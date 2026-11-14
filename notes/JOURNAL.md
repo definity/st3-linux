@@ -145,3 +145,26 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   the reply; nothing known -> 640x480. Sixel now re-sends only changed cell-row bands (gaps <3 rows merged): composited result
   identical to full frames (ST3_GFX_FULL=1) on ARMANI play/stop run; 73 vs 175 KiB/s. gfxcheck composites bands;
   GFXCHECK_ANSWER fakes an hterm-like terminal (0 pixels, answers queries). Non-sixel DA1 -> text verified.
+- [m4e] 2026-11-14 CTRL-F PREFIX, AUDIO RESTART FIX, SIXEL 6-ROW BANDS.
+  KEYS: ST3 reads keys at image 1E4A (INT16/00 via _bios_keybrd): code = ASCII if AL!=0 else 1000+scan; Ctrl-F = 6.
+  Static constant search inconclusive (dispatch not via immediates), so tests/keyprobe.c: snapshot machine in a state,
+  press probe vs two impossible junk keys (scan 7Eh / 03h), diff all memory (mask = bytes where junk runs differ).
+  Ctrl-F ignored on main menu/F1/F3; elsewhere only the last-key byte differs; in pattern editor (note/instr/vol/effect
+  cols) Ctrl-F is byte-identical to Ctrl-K, Ctrl-U, Ctrl-Z = ST3's generic unassigned-key data entry, no command.
+  (Ctrl-A, Ctrl-G behave differently -> real functions, left alone.)  main.c: Ctrl-F then 1..0 = F1..F10,
+  !@#$%^&*() = Shift-F1..F10, Ctrl-F Ctrl-F = raw Ctrl-F, other key cancels + is delivered, 3 s timeout.
+  HELP LINE (user-approved display change): "Quickhelp; GLOBAL KEYS" is one 775-byte string at DS:126E (DS = load+3A94h),
+  shown only via push 20h/push ds/push 126Eh at image 50C7h.  No spare bytes -> src/st3patch.c copies it with the line
+  "CTRL-F 1..0 Same as F1..F10 (SHIFT: SF1..SF10)" to DS:C000 (DS:90A0..FFFF verified all-zero after a full session)
+  and patches the push immediate; signature-checked, in memory only.
+  AUDIO: user heard an ARMANI instrument "in and out" on the right.  Song data: ch2/ch4 are R (L1 R1 L2 R2 L3, SB Pro
+  hard pan); ch4 has K (vib+volslide) x80, U x48, G x311 and vol-column ramps 0..20+; ch2 Q retrig-volslide x18 ->
+  composed.  Found 2 real bugs on the way: (1) DMA position was derived from the DSP's consumed count, so every DSP
+  restart (single-cycle 65002 B blocks over a 1024 B auto-init ring, every 1.5 s) jumped the ring read back 490 B;
+  now the 8237 keeps dma[].cur across restarts, reset on address/count writes.  (2) 1-frame drop to 0 between transfers;
+  mixer now holds the last DAC value and decays it (~20 ms, AC-coupled output).  Clicks (2nd-diff > 9000) at the 1.5 s
+  restarts: 3 -> 2 -> 0 over 60 s.
+  FLICKER: tests/flicker.c renders at 280 Hz through 9 menu moves: 0 transient frames -> not ST3.  Likely terminal side:
+  sixel bands of cell-row height not a multiple of 6 leave a partial last band some terminals paint black.  Picture height
+  now floor6(box), every band padded to a multiple of 6 with real rows (bottom edge: start earlier).  gfxcheck counts
+  non-multiple-of-6 sixels (0) and GFXCHECK_CELL tests 8x16/8x17/9x18; composites identical to full frames.

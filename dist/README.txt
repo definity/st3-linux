@@ -19,6 +19,9 @@ Quick start
                    Arrow keys + Enter pick a file; answer Y to "Current song is about to be erased".
   F5 / F8 ........ play (opens the Info Screen) / stop          F1..F4 ..... orders / patterns / instruments / library
   F9 / Shift-F9 .. status / setup        F10 ........ quick help        Ctrl-Q, Y ... quit
+  Ctrl-F, 1..0 ... same as F1..F10; Ctrl-F, Shift+1..0 = Shift-F1..F10 (e.g. Ctrl-F then 5 = F5, Ctrl-F then ( =
+                   Shift-F9 setup).  For keyboards whose F-keys do other things.  Listed in ST3's quick help
+                   (F5, F10) - the one line st3 adds to ST3.  Ctrl-F twice = a plain Ctrl-F.
   Ctrl-] ......... leave the emulator immediately (emergency exit)
   Info Screen (F5): PgUp/PgDn picks the bottom window (None, Track-5/8/18 = scrolling pattern view, scopes,
                    note spectrum); Ctrl-T cycles 5/8/18-channel tracks; Left/Right scroll channels.
@@ -26,7 +29,7 @@ Quick start
 
 Chromebook notes
   * Top-row keys are media keys by default; hold Search (Launcher) and press the top row for F1..F10,
-    or enable "Treat top-row keys as function keys" in ChromeOS keyboard settings.
+    or enable "Treat top-row keys as function keys" in ChromeOS keyboard settings, or use Ctrl-F, 1..0.
   * Some Ctrl shortcuts (Ctrl-W, Ctrl-N, Ctrl-T) may be grabbed by the Terminal app; check its settings.
 
 Options

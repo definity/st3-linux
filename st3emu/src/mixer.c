@@ -50,8 +50,11 @@ void mixer_update(Machine *m) {
     int fm_on = opl_active(&m->opl);
     double fstep = OPL_RATE / MIX_RATE;
     for (int i = 0; i < n; i++) {
-        int l = 0, r = 0;
-        if (i < avail) { l = m->mix.dacq[i * 2]; r = m->mix.dacq[i * 2 + 1]; }
+        /* no DAC data (between transfers): the DAC holds its last value; the card's AC-coupled output lets it
+         * settle back to zero (~20 ms) instead of dropping there in one step, which clicked at every restart */
+        if (i < avail) { m->mix.hold_l = m->mix.dacq[i * 2]; m->mix.hold_r = m->mix.dacq[i * 2 + 1]; }
+        else { m->mix.hold_l *= 0.999f; m->mix.hold_r *= 0.999f; }
+        int l = (int)m->mix.hold_l, r = (int)m->mix.hold_r;
         if (fm_on) {
             m->mix.opl_pos += fstep;
             while (m->mix.opl_pos >= 1.0) { m->mix.opl_prev = m->mix.opl_cur; m->mix.opl_cur = opl_sample(&m->opl); m->mix.opl_pos -= 1.0; }

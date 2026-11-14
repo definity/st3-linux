@@ -71,7 +71,7 @@ static void write_all(const char *b, int n) {
 }
 
 /* ------------------------------------------------------------------ keyboard */
-static uint8_t ibuf[256]; static int ilen; static double esc_t;
+static uint8_t ibuf[256]; static int ilen; static double esc_t, fn_prefix;
 static double shift_clear_at;
 
 static void push_key(uint16_t k, int shift) {
@@ -93,6 +93,18 @@ static void parse_input(int flush_esc) {
     while (i < ilen) {
         uint8_t c = ibuf[i];
         if (c == 0x1D) { want_quit = 1; i++; continue; }            /* Ctrl-] : leave emulator */
+        /* function prefix, for keyboards without handy F-keys: Ctrl-F then 1..0 = F1..F10, Shift+1..0 (!@#$%^&*()) =
+         * Shift-F1..F10, Ctrl-F again = a real Ctrl-F.  Any other key cancels the prefix and is delivered normally.
+         * ST3 has no Ctrl-F command (tests/keyprobe.c: it acts exactly like the unassigned Ctrl-K/U/Z everywhere). */
+        if (fn_prefix && now() - fn_prefix > 3.0) fn_prefix = 0;
+        if (c == 0x06 && !fn_prefix) { fn_prefix = now(); i++; continue; }
+        if (fn_prefix) {
+            static const char dig[] = "1234567890", sh[] = "!@#$%^&*()";
+            const char *pd = c ? strchr(dig, c) : NULL, *ps = c ? strchr(sh, c) : NULL;
+            fn_prefix = 0;
+            if (pd) { push_key(key_fn((int)(pd - dig) + 1, 0), 0); i++; continue; }
+            if (ps) { push_key(key_fn((int)(ps - sh) + 1, 1), 0x02); i++; continue; }
+        }
         if (c != 0x1B) {
             if (c >= 0x80) { i++; continue; }                         /* ignore non-ASCII input */
             push_key(key_ascii(c), 0); i++; continue;
@@ -184,6 +196,7 @@ static void usage(void) {
         "  --glyphs MODE   text mode glyphs: st3 (default) | blocks\n"
         "  --log FILE      write emulator debug log\n"
         "keys: as in DOS ST3 (F1..F10, Shift-F9 setup, Ctrl-L load, F5 play, F8 stop, Ctrl-Q quit).\n"
+        "      Ctrl-F then 1..0 = F1..F10, Ctrl-F then Shift+1..0 = Shift-F1..F10 (for keyboards without F-keys).\n"
         "      Ctrl-] leaves the emulator immediately. Terminal must be at least 80x50.\n");
 }
 
@@ -213,6 +226,7 @@ int main(int argc, char **argv) {
     machine_init(&M, MEM, &cfg, log);
     int lr = exe ? machine_load_exe(&M, exe) : machine_load_exe_mem(&M, st3_exe, st3_exe_len, "ST3.EXE");
     if (lr) { fprintf(stderr, "st3: cannot load executable (%d)\n", lr); return 1; }
+    st3_patch_help(&M);   /* Ctrl-F line in the global-keys quickhelp (no-op for other executables) */
     if (!nosound && audio_open(&A, audio_cmd) == 0) { M.pcm_sink = pcm_sink; M.pcm_ud = &A; }
     if (term_setup()) return 1;
     term_query();

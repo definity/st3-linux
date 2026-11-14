@@ -50,7 +50,7 @@ typedef struct Machine {
     int video_dirty;
 
     /* 8237 DMA (ch0-3) */
-    struct { uint16_t addr, cnt; uint8_t page, mode, mask; } dma[4];
+    struct { uint16_t addr, cnt; uint8_t page, mode, mask; uint32_t cur; } dma[4];   /* cur: bytes into the block (kept across DSP restarts) */
     int dma_ff;
 
     /* Sound Blaster Pro @ 0x220, IRQ7, DMA1 */
@@ -72,6 +72,7 @@ typedef struct Machine {
         double phase; float pl, pr; uint8_t part[2]; int part_n, stereo_prev;   /* DAC resampler state */
         int16_t dacq[8192 * 2]; int dq_n;                                         /* resampled DAC frames */
         double opl_pos; int opl_prev, opl_cur;                                    /* FM resampler state */
+        float hold_l, hold_r;                                                     /* DAC output hold */
         uint64_t frames;                                                          /* output frames so far */
         int16_t out[1024 * 2]; int on;
     } mix;
@@ -98,6 +99,7 @@ typedef struct Machine {
 void machine_init(Machine *m, uint8_t *mem, const MachineConfig *cfg, FILE *log);
 int machine_load_exe(Machine *m, const char *path);
 int machine_load_exe_mem(Machine *m, const uint8_t *data, long size, const char *name);
+int st3_patch_help(Machine *m);   /* st3patch.c: Ctrl-F line in ST3's global-keys quickhelp; 0 = applied */
 /* run a slice of n instructions (handles HLE traps, IRQ delivery, timers). returns <0 on fatal error */
 int machine_run(Machine *m, uint64_t n);
 double machine_vtime(Machine *m);

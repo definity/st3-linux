@@ -165,23 +165,32 @@ size_t gfx_frame(Gfx *g, const VgaFrame *f, int rows, int cols, int xpix, int yp
     if (g->mode == GFX_SIXEL) {
         /* sixel pixels are screen pixels: scale to the cell box.  Cell size unknown: native width, 4:3 (640x480). */
         int known = cw > 0 && chh > 0;
-        int sw = known ? bw * cw : f->w, sh = known ? bh * chh : f->w * 3 / 4;
+        /* every sixel is a whole number of 6-pixel bands: some terminals paint the unused part of a partial last band
+         * black, which showed as thin black lines under updated rows.  So the picture height is a multiple of 6
+         * (up to 5 pixel rows shorter than the cell box) and every update band below is extended to one. */
+        int sw = known ? bw * cw : f->w, sh = known ? bh * chh / 6 * 6 : f->w * 3 / 4;
         uint8_t *img = scale(g, f, sw, sh);
         if (known && !cleared && !palchg && !getenv("ST3_GFX_FULL") && g->prev && g->pw == sw && g->ph == sh) {
             /* re-send only the bands of cell rows that changed (cursor blink, VU meters, pattern rows);
              * bands separated by fewer than 3 unchanged rows are sent as one */
-            int any = 0;
-            for (int r = 0; r < bh;) {
-                if (!memcmp(img + (size_t)r * chh * sw, g->prev + (size_t)r * chh * sw, (size_t)chh * sw)) { r++; continue; }
+            int nrow = (sh + chh - 1) / chh, any = 0;
+#define ROWDIFF(r) memcmp(img + (size_t)(r) * chh * sw, g->prev + (size_t)(r) * chh * sw, \
+                          (size_t)((((r) + 1) * chh < sh ? chh : sh - (r) * chh)) * sw)
+            for (int r = 0; r < nrow;) {
+                if (!ROWDIFF(r)) { r++; continue; }
                 int r0 = r, r1 = r, gap = 0;
-                for (r++; r < bh && gap < 3; r++) {
-                    if (memcmp(img + (size_t)r * chh * sw, g->prev + (size_t)r * chh * sw, (size_t)chh * sw)) { r1 = r; gap = 0; } else gap++;
-                }
+                for (r++; r < nrow && gap < 3; r++) { if (ROWDIFF(r)) { r1 = r; gap = 0; } else gap++; }
                 r = r1 + 1;
+                /* pixel span: starts on a cell row (cursor positioning), height rounded up to 6 with real picture rows;
+                 * at the bottom edge start earlier instead, on a cell row whose distance to the end is a multiple of 6 */
+                int y0 = r0 * chh, y1 = y0 + ((r1 + 1) * chh - y0 + 5) / 6 * 6;
+                if (y1 > sh) { y1 = sh; while (r0 > 0 && (sh - r0 * chh) % 6) r0--; y0 = r0 * chh; }
                 putf(g, "\x1b[%d;%dH", by + r0 + 1, bx + 1);
-                sixel_encode(g, img + (size_t)r0 * chh * sw, sw, (r1 - r0 + 1) * chh, f->pal);
+                sixel_encode(g, img + (size_t)y0 * sw, sw, y1 - y0, f->pal);
                 any = 1;
+                if (y1 > r * chh) r = (y1 + chh - 1) / chh;   /* rows already covered by the padding */
             }
+#undef ROWDIFF
             if (!any) return g->n;
             g->part_frames++;
         } else {

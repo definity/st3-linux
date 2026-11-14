@@ -28,12 +28,9 @@ void timers_update(Machine *m) {
 }
 
 /* ------------------------------------------------------------------ DMA */
-static uint32_t dma_pos(Machine *m, int ch) {
-    if (ch != SB_DMA || !m->sb.running) return 0;
-    uint32_t tot = (uint32_t)m->dma[ch].cnt + 1;
-    uint64_t done = m->sb.consumed;
-    return (m->dma[ch].mode & 0x10) ? (uint32_t)(done % tot) : (uint32_t)(done < tot ? done : tot);
-}
+/* the 8237 keeps its own current address: it advances only as the DSP takes bytes, survives DSP restarts, and is
+ * reloaded from the base registers when the program writes address/count (or at terminal count in auto-init mode) */
+static uint32_t dma_pos(Machine *m, int ch) { return m->dma[ch].cur; }
 
 static void dma_out(Machine *m, uint16_t port, uint8_t v) {
     static const int pagemap[16] = {[7] = 0, [3] = 1, [1] = 2, [2] = 3};
@@ -41,6 +38,7 @@ static void dma_out(Machine *m, uint16_t port, uint8_t v) {
         int ch = port >> 1;
         uint16_t *r = (port & 1) ? &m->dma[ch].cnt : &m->dma[ch].addr;
         if (!m->dma_ff) *r = (*r & 0xFF00) | v; else *r = (*r & 0x00FF) | (v << 8);
+        m->dma[ch].cur = 0;
         m->dma_ff ^= 1;
     } else if (port == 0x0A) m->dma[v & 3].mask = (v >> 2) & 1;
     else if (port == 0x0B) m->dma[v & 3].mode = v;
@@ -155,7 +153,8 @@ void sb_update(Machine *m) {
         int autod = m->dma[SB_DMA].mode & 0x10;
         uint8_t buf[4096];
         while (m->sb.consumed < target) {
-            uint32_t i = autod ? (uint32_t)(m->sb.consumed % tot) : (uint32_t)(m->sb.consumed < tot ? m->sb.consumed : tot - 1);
+            uint32_t i = m->dma[SB_DMA].cur;
+            if (i >= tot) { if (autod) i = m->dma[SB_DMA].cur = 0; else i = tot - 1; }   /* single-cycle: stuck at end */
             uint32_t n = (uint32_t)(target - m->sb.consumed);
             if (n > tot - i) n = tot - i;
             if (n > sizeof buf) n = sizeof buf;
@@ -165,6 +164,7 @@ void sb_update(Machine *m) {
                 mixer_dac(m, buf, (int)n, m->sb.bps / (stereo ? 2 : 1), stereo);
             }
             m->sb.consumed += n;
+            m->dma[SB_DMA].cur = autod ? (i + n) % tot : i + n;   /* single-cycle: reaches tot (count reads FFFFh) */
         }
     }
     if (m->sb.consumed >= m->sb.len) {
