@@ -35,6 +35,9 @@ struct CPU {
     uint64_t icount;         /* instructions executed */
     int halted;
     int error;               /* nonzero: unimplemented opcode etc. */
+    uint32_t hist[256][2];   /* last 256 non-sequential transfers: from CS:IP, to CS:IP (ring, for crash reports) */
+    uint8_t hpos;
+    uint32_t hprev, hprevlin;
     uint32_t err_lin;        /* linear address of faulting instruction */
     uint8_t err_bytes[8];
     int inhibit_irq;         /* one-instruction interrupt shadow (after mov ss / pop ss / sti) */

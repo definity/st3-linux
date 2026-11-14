@@ -31,6 +31,9 @@ Chromebook notes
   * Top-row keys are media keys by default; hold Search (Launcher) and press the top row for F1..F10,
     or enable "Treat top-row keys as function keys" in ChromeOS keyboard settings, or use Ctrl-F, 1..0.
   * Some Ctrl shortcuts (Ctrl-W, Ctrl-N, Ctrl-T) may be grabbed by the Terminal app; check its settings.
+  * Known issue: while the Terminal window has keyboard focus, the graphics picture can flicker with thin
+    horizontal lines as it updates (the Terminal repaints more often when focused).  Unfocused it is clean, and
+    other sixel terminals (e.g. xterm -ti vt340) show no lines.  --gfx text avoids it; --fps 10 may reduce it.
 
 Options
   --root DIR      use DIR as C:\ST3 instead of the current directory

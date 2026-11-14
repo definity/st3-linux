@@ -99,6 +99,10 @@ int machine_run(Machine *m, uint64_t n) {
         if (r < 0) {
             LOGF(m, "CPU error at %05X: %02X %02X %02X %02X %02X %02X\n", c->err_lin, c->err_bytes[0], c->err_bytes[1],
                  c->err_bytes[2], c->err_bytes[3], c->err_bytes[4], c->err_bytes[5]);
+            LOGF(m, "last jumps (oldest first, from->to):");
+            for (int i = 0; i < 256; i++) { uint32_t *h = c->hist[(uint8_t)(c->hpos + i)];
+                LOGF(m, "%s%04X:%04X->%04X:%04X", i % 6 ? " " : "\n  ", h[0] >> 16, h[0] & 0xFFFF, h[1] >> 16, h[1] & 0xFFFF); }
+            LOGF(m, "\n");
             return -1;
         }
         if (r == 1) {

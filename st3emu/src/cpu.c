@@ -706,6 +706,9 @@ int cpu_run(CPU *c, uint64_t n, uint32_t trap_lo, uint32_t trap_hi, uint32_t *tr
         if (c->halted) return 2;
         uint32_t l = cpu_lin(c);
         if (l >= trap_lo && l < trap_hi) { if (trapped) *trapped = l; return 1; }
+        uint32_t cur = (uint32_t)c->seg[S_CS] << 16 | (uint16_t)c->eip;
+        if (l - c->hprevlin > 15) { c->hist[c->hpos][0] = c->hprev; c->hist[c->hpos][1] = cur; c->hpos++; }
+        c->hprev = cur; c->hprevlin = l;
         if (cpu_step(c)) return -1;
     }
     return 0;

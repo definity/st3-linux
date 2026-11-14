@@ -200,3 +200,14 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   with Track-5 view.  EMS with user's collection (music_collection/, git-ignored: third-party songs): BABY.S3M 1.2 MB:
   no EMS -> load fails (FreeMem 043K red, stays on "Retrieve Module", silence); EMS -> 32 sample handles, plays,
   FreeEMS 15024K.  A-PAUL.S3M 1.1 MB: no EMS RMS 2411 (samples missing) vs EMS 5484, 26 handles.
+- [m5d] 2026-11-14 User: mode-2026 build still shows the lines in ChromeOS Terminal while focused, clean unfocused;
+  "If it's an artifact of my setup it's not a big deal.  Let's move on."  Left as a documented known issue
+  (dist/README.txt Chromebook notes).  Started tools/sweep.sh: headless load+play regression over music_collection.
+- [m5e] 2026-11-14 COLLECTION SWEEP (tools/sweep.sh, 9 jobs, 13 min): 237 songs (+1 .STM not swept) loaded via
+  Ctrl-L and played 20 s headless with EMS.  230 clean (no CPU errors, no unhandled INTs, audible; 235 used EMS).
+  6 silent ones (ANTISNOL, PIANO, SORRY, STUPID1-3) have empty order lists (all FFh): nothing to play, correct.
+  DFM001.S3M crashes after load: the file is truncated (17 of 22 samples have parapointer 0, the rest point past EOF).
+  ST3 leaves those sample buffers NULL, then its loop-pad post-processing (21AB:0A5B..0BA0: shift by 200h, copy 512 B
+  past loop end) runs on instrument 21 (looped) through 0000:0000, overwrites the IVT and ST3's code at load+78h ->
+  far call into garbage.  An ST3 bug with a broken file; real hardware would crash too.  Found with a new jump-history
+  ring in the CPU (last 256 non-sequential transfers, dumped to the log on a CPU error; ~3% slower).
