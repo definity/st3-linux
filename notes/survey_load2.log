@@ -1,0 +1,654 @@
+  RESIZE 0800 to 4AA4
+  ALLOC 0004 paras -> 0x52a4 (max free 0000)
+  RESIZE 52A4 to 0040
+  OPEN 'C:\\ST3\\ST3.SET' mode 00 -> 5
+  FONT upload #1 at 30C9:02D3 n=18868
+  FONT upload #2 at 30C9:019F n=19984
+  ALLOC FFFF paras -> None (max free 4D1C)
+  FONT upload #3 at 30C9:019F n=97922
+  ALLOC 0001 paras -> 0x52e4 (max free 0000)
+  ALLOC 0100 paras -> 0x52e5 (max free 0000)
+  ALLOC 0500 paras -> 0x53e5 (max free 0000)
+  SB start len=5 auto=False hs=False tc=131 byte-rate=8000 stereo=False DMA1 addr=03:2C60 cnt=21 mode=59 at 24ED:62D8
+  SB start len=5 auto=False hs=False tc=131 byte-rate=8000 stereo=False DMA1 addr=03:2C60 cnt=21 mode=59 at 24ED:63C9
+  SB start len=5 auto=False hs=False tc=131 byte-rate=8000 stereo=False DMA1 addr=03:2C60 cnt=21 mode=59 at 24ED:63C9
+  SB mixer[0E]=20
+  SB mixer[0E]=20
+  SB mixer[00]=00
+  SB mixer[02]=00
+  SB mixer[04]=00
+  SB mixer[06]=00
+  SB mixer[08]=00
+  SB mixer[0A]=00
+  SB mixer[0C]=00
+  SB mixer[0E]=20
+  SB mixer[10]=00
+  SB mixer[12]=00
+  SB mixer[14]=00
+  SB mixer[16]=00
+  SB mixer[18]=00
+  SB mixer[1A]=00
+  SB mixer[1C]=00
+  SB mixer[1E]=00
+  SB mixer[20]=00
+  SB mixer[22]=00
+  SB mixer[24]=00
+  SB mixer[26]=00
+  SB mixer[28]=00
+  SB mixer[2A]=00
+  SB mixer[2C]=00
+  SB mixer[2E]=00
+  SB mixer[0E]=20
+  SB start len=65001 auto=False hs=True tc=233 byte-rate=43478 stereo=False DMA1 addr=03:2C60 cnt=21 mode=59 at 24ED:62D8
+  PIT ch0 divisor = 17005 (70.17 Hz) at 24ED:286B
+  SB start len=65001 auto=False hs=True tc=233 byte-rate=43478 stereo=False DMA1 addr=05:2E50 cnt=1023 mode=59 at 24ED:63A7
+  PIT ch0 divisor = 0 (18.21 Hz) at 24ED:28A4
+  OPEN 'EMMXXXX0' (EMS probe) -> not found
+  ALLOC 028B paras -> 0x58e5 (max free 0000)
+  ALLOC FFFF paras -> None (max free 4490)
+  SB mixer[0E]=20
+  SB mixer[0E]=20
+  SB mixer[00]=00
+  SB mixer[02]=00
+  SB mixer[04]=00
+  SB mixer[06]=00
+  SB mixer[08]=00
+  SB mixer[0A]=00
+  SB mixer[0C]=00
+  SB mixer[0E]=20
+  SB mixer[10]=00
+  SB mixer[12]=00
+  SB mixer[14]=00
+  SB mixer[16]=00
+  SB mixer[18]=00
+  SB mixer[1A]=00
+  SB mixer[1C]=00
+  SB mixer[1E]=00
+  SB mixer[20]=00
+  SB mixer[22]=00
+  SB mixer[24]=00
+  SB mixer[26]=00
+  SB mixer[28]=00
+  SB mixer[2A]=00
+  SB mixer[2C]=00
+  SB mixer[2E]=00
+  SB mixer[0E]=20
+  SB start len=65001 auto=False hs=True tc=233 byte-rate=43478 stereo=False DMA1 addr=05:2E50 cnt=1023 mode=59 at 24ED:62D8
+  PIT ch0 divisor = 17005 (70.17 Hz) at 24ED:286B
+  ALLOC FFFF paras -> None (max free 4490)
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  FINDFIRST '*.*' attr FF -> 5
+  ALLOC FFFF paras -> None (max free 4490)
+  ALLOC 4450 paras -> 0x5b70 (max free 0000)
+  ALLOC FFFF paras -> None (max free 0040)
+  RESIZE 5B70 to 0005
+  ALLOC FFFF paras -> None (max free 448B)
+  ALLOC FFFF paras -> None (max free 448B)
+  ALLOC 444B paras -> 0x5b75 (max free 0000)
+  ALLOC FFFF paras -> None (max free 0040)
+  FINDFIRST '*.STM' attr FF -> 0
+  FINDFIRST '*.S3M' attr FF -> 0
+  FINDFIRST '*.MOD' attr FF -> 0
+  RESIZE 5B75 to 0002
+  ALLOC FFFF paras -> None (max free 4489)
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  ALLOC FFFF paras -> None (max free 448B)
+  ALLOC FFFF paras -> None (max free 4490)
+  FINDFIRST '*.*' attr FF -> 5
+  ALLOC FFFF paras -> None (max free 4490)
+  ALLOC 4450 paras -> 0x5b70 (max free 0000)
+  ALLOC FFFF paras -> None (max free 0040)
+  RESIZE 5B70 to 0005
+  ALLOC FFFF paras -> None (max free 448B)
+  ALLOC FFFF paras -> None (max free 448B)
+  ALLOC 444B paras -> 0x5b75 (max free 0000)
+  ALLOC FFFF paras -> None (max free 0040)
+  FINDFIRST '*.STM' attr FF -> 0
+  FINDFIRST '*.S3M' attr FF -> 0
+  FINDFIRST '*.MOD' attr FF -> 0
+  RESIZE 5B75 to 0002
+  ALLOC FFFF paras -> None (max free 4489)
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  ALLOC FFFF paras -> None (max free 448B)
+  ALLOC FFFF paras -> None (max free 4490)
+  FINDFIRST '*.*' attr FF -> 5
+  ALLOC FFFF paras -> None (max free 4490)
+  ALLOC 4450 paras -> 0x5b70 (max free 0000)
+  ALLOC FFFF paras -> None (max free 0040)
+  RESIZE 5B70 to 0005
+  ALLOC FFFF paras -> None (max free 448B)
+  ALLOC FFFF paras -> None (max free 448B)
+  ALLOC 444B paras -> 0x5b75 (max free 0000)
+  ALLOC FFFF paras -> None (max free 0040)
+  FINDFIRST '*.STM' attr FF -> 0
+  FINDFIRST '*.S3M' attr FF -> 0
+  FINDFIRST '*.MOD' attr FF -> 0
+  RESIZE 5B75 to 0002
+  ALLOC FFFF paras -> None (max free 4489)
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  SB start len=65001 auto=False hs=True tc=233 byte-rate=43478 stereo=False DMA1 addr=05:2E50 cnt=1023 mode=59 at 24ED:63A7
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  SB start len=65001 auto=False hs=True tc=233 byte-rate=43478 stereo=False DMA1 addr=05:2E50 cnt=1023 mode=59 at 24ED:63A7
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  SB start len=65001 auto=False hs=True tc=233 byte-rate=43478 stereo=False DMA1 addr=05:2E50 cnt=1023 mode=59 at 24ED:63A7
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  SB start len=65001 auto=False hs=True tc=233 byte-rate=43478 stereo=False DMA1 addr=05:2E50 cnt=1023 mode=59 at 24ED:63A7
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8
+  PIT ch0 divisor = 16900 (70.60 Hz) at 24ED:5BB8

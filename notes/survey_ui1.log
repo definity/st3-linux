@@ -1,0 +1,14 @@
+  RESIZE 0800 to 4AA4
+  ALLOC 0004 paras -> 0x52a4 (max free 0000)
+  RESIZE 52A4 to 0040
+  OPEN 'C:\\ST3\\ST3.SET' mode 00 -> 5
+  ALLOC FFFF paras -> None (max free 4D1C)
+  ALLOC 0001 paras -> 0x52e4 (max free 0000)
+  ALLOC 0100 paras -> 0x52e5 (max free 0000)
+  ALLOC 0500 paras -> 0x53e5 (max free 0000)
+  ALLOC 0001 paras -> 0x58e5 (max free 0000)
+  ALLOC 0500 paras -> 0x58e6 (max free 0000)
+  OPEN 'EMMXXXX0' (EMS probe) -> not found
+  ALLOC 028B paras -> 0x5de6 (max free 0000)
+  ALLOC FFFF paras -> None (max free 3F8F)
+  ALLOC FFFF paras -> None (max free 3F8F)

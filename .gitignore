@@ -1,0 +1,14 @@
+# third-party Python packages (pip install --target tools/pylib unicorn capstone pyte)
+tools/pylib/
+__pycache__/
+# build products
+st3emu/*.so
+st3emu/st3
+st3emu/st3head
+st3emu/src/st3exe_data.c
+*.o
+dist/st3
+# scratch / test output
+out/
+sandbox/
+*.wav

@@ -1,0 +1,625 @@
+cases 20000 {'ok': 19096, 'uc_err': 568, 'skip_undef': 95, 'skip_de': 1, 'bad': 39}
+   201 C unimpl:??
+      c7fb7779e6acc1607ce62c
+    60 C accepts, UC rejects:ret
+      66c354ae138c00811568161e
+    41 C accepts, UC rejects:mov
+      67a0926ca053c2c737b2337f
+    27 C accepts, UC rejects:call
+      66e8519c9a11611eb0582826
+    23 C accepts, UC rejects:jmp
+      66e9c85f8c970c84eb5cdddc
+    22 C accepts, UC rejects:jae
+      660f83bbef2182982ae37eb6ae
+    18 C accepts, UC rejects:jbe
+      66360f8610f6f889967ab4d7deae
+    17 C accepts, UC rejects:test
+      f78f4276594ad8184e65fb
+    17 C accepts, UC rejects:or
+      66366709057f6cef7e038d2ecb94
+    17 C accepts, UC rejects:jns
+      660f895bbdde2f1ff1c60f0dfa
+    16 C accepts, UC rejects:imul
+      6769aff67daa91dc19997924
+    15 C accepts, UC rejects:jle
+      660f8e6d1d5fb66044b82f35ba
+    15 test
+      64f60f186d71f04fff3718eb  [test byte ptr fs:[bx], 0x18] regs=['0000EC84', '00007C22', '0000D33B', '0000067F', '00006993', '0000B9EF', '0000A140', '00009AEB'] fl=0E97
+      ip C=BF25 U=BF21; flags C=0602 U=0E97 diff=0885
+    13 C accepts, UC rejects:add
+      2667022d80143eb8f54cfb25f2
+    13 C accepts, UC rejects:xor
+      6780b58db89c39c443e1c696
+    12 C accepts, UC rejects:jb
+      660f82f1390115b8006e6f2068
+    12 idiv
+      66f6b9655177a36f67dd5741  [idiv byte ptr [bx + di + 0x5165]] regs=['A8BD7EC6', 'B1C10002', 'E0417F71', 'C711CCFE', '000001C3', 'A0A4282B', '8BB74221', 'FDAFAD0D'] fl=0286
+      seg1 C=5A7D U=ABFD; ip C=4E28 U=3BCC
+    12 C accepts, UC rejects:jo
+      660f80d7ec4e1759e11e4ea9b8
+    11 C accepts, UC rejects:cmp
+      666738155a323243ca738e7e2a
+    11 C accepts, UC rejects:jl
+      660f8ceb26bf8724c601a76d74
+    10 C accepts, UC rejects:jp
+      66670f8a64275bbb6a5106bb5bfb
+    10 C accepts, UC rejects:sub
+      666728962587f8238f5cfbc844
+    10 C accepts, UC rejects:jno
+      660f81c2f398eab8a40b365b58
+     9 C accepts, UC rejects:je
+      660f848ad81174b5f2a9d1b704
+     9 C accepts, UC rejects:jnp
+      660f8b8bf37097bc5b5f48269a
+     9 C accepts, UC rejects:jg
+      660f8fc534fcf0f0aea3e3352b
+     8 C accepts, UC rejects:sbb
+      671b8734636fc9f2be198ca2
+     8 C accepts, UC rejects:shld
+      6636670fa4b242f681ed1be00d6fd9
+     8 C accepts, UC rejects:js
+      660f88b155aaf97acc5809938e
+     7 C accepts, UC rejects:jge
+      660f8d1d2b745939d83a569bb1
+     7 C accepts, UC rejects:and
+      64672287279f0dbad01a32cf9c
+     7 div
+      f7b4d6b1a335f98c5b155d  [div word ptr [si - 0x4e2a]] regs=['2F2A8656', 'E3242BE1', '64FD31A4', '6D9FD854', '00002727', '8FE8DACF', '3E20E010', '7CD27C4C'] fl=0252
+      r4 C=00002721 U=00002727; seg1 C=8D61 U=1000; ip C=08D5 U=DDE6; flags C=0052 U=0252 diff=0200; mem 6 bytes differ first@42721 C=E6 U=75
+     6 C accepts, UC rejects:adc
+      66671234ad7fdf1326ba09ccfb
+     5 C accepts, UC rejects:ja
+      66670f87b3eff6e5b3b93549d2a8
+     5 C accepts, UC rejects:movsx
+      670fbfa9791fdc921b28046031
+     5 C accepts, UC rejects:sar
+      67d1bcc6874296aa837a6eec
+     5 movsd
+      f26626a5c41b09a59ed428b37d8f  [movsd dword ptr es:[di], dword ptr es:[si]] regs=['00009F07', '00000002', '000067AC', '0000FB33', '0000BF77', '00001B40', '0000BD59', '000059EE'] fl=0A83
+      r1 C=00000000 U=00000001; r6 C=0000BD61 U=0000BD5D; r7 C=000059F6 U=000059F2; ip C=8DC9 U=8DC5; mem 4 bytes differ first@359F2 C=8A U=1E
+     4 C accepts, UC rejects:jne
+      660f85cbe60c13946ad29c2aa7
+     4 C accepts, UC rejects:rol
+      6667d0058cc08c3dc297551c80
+     4 C accepts, UC rejects:movzx
+      670fb7a7c4f5fc5c5ee8fe3668
+     3 C accepts, UC rejects:shrd
+      670fac9a82148464c20e26c2a1
+     3 C accepts, UC rejects:sete
+      6636670f9484d7c7263e96776c61ba
+     3 C accepts, UC rejects:bsr
+      670fbdafcdad069660680f9b7d
+     3 C accepts, UC rejects:btr
+      64670fb3bec6367fd7fdf2cddea5
+     3 C accepts, UC rejects:btc
+      66670fbb91f1e259a3244d56c7ac
+     3 C accepts, UC rejects:xchg
+      6787b294ffa9794c5c401d7a
+     3 C accepts, UC rejects:setae
+      670f93b89389faea5054219774
+     3 C accepts, UC rejects:??
+      678fba16b41fa71232ca71f8
+     2 C accepts, UC rejects:shl
+      6667c0a0db435404cff8bd5152
+     2 C accepts, UC rejects:setg
+      66670f9fba1125cb859a37da987f
+     2 C accepts, UC rejects:setge
+      66670f9d85de1cda383b1653f3a6
+     2 C accepts, UC rejects:dec
+      67ff8e95a85607ba6ba7d9d3
+     2 C accepts, UC rejects:sets
+      670f9825c449e84c5dbb3f6b59
+     2 C accepts, UC rejects:setle
+      670f9e0d376828d97e05fdd08a
+     2 C accepts, UC rejects:seta
+      66670f97b8c29e80c05e84659ab7
+     2 C accepts, UC rejects:rcr
+      2e67d09dbec841fb67cc902dab
+     2 C accepts, UC rejects:setbe
+      670f96ade3d805f7ba40e84caa
+     1 C accepts, UC rejects:setns
+      64670f999e15b2aff65ffb2152a9
+     1 C accepts, UC rejects:rcl
+      6667d097eaeb633f6cf936fed5
+     1 C accepts, UC rejects:seto
+      670f90ac88313033be2a696b77
+cases 20000 {'ok': 19071, 'uc_err': 510, 'skip_undef': 100, 'skip_de': 1, 'bad': 49}
+   268 C unimpl:??
+      66c732bea9e2a821d9a76c40
+    55 C accepts, UC rejects:ret
+      6667c31acfef0ed3732ad05985
+    45 C accepts, UC rejects:mov
+      67882d16fc87aee09e68ec4c
+    35 C accepts, UC rejects:call
+      66e84109bd9b37d5fa4338cc
+    22 C accepts, UC rejects:jmp
+      662ee93e60227d708d2296cabd
+    22 C accepts, UC rejects:jle
+      660f8e06818b7cd42c584869f1
+    20 C accepts, UC rejects:jnp
+      660f8b6cc5474ede3737c3e392
+    18 test
+      f6cb9e2f90a948e15f87c1  [test bl, -0x62] regs=['B2ECAD81', '102B0001', '2D195053', '220B1DD0', '000053EC', '4DD5FE16', 'A124B767', 'D509AB95'] fl=0242
+      ip C=341D U=341A; flags C=0286 U=0242 diff=00C4
+    18 C accepts, UC rejects:jbe
+      660f8666ed4b9489ea974f95e1
+    15 C accepts, UC rejects:jns
+      660f89d63ab3304fa1751faf32
+    14 C accepts, UC rejects:or
+      670bbe88915ac6184cb7bb19
+    14 idiv
+      67f77d23de150223155daa54  [idiv word ptr [ebp + 0x23]] regs=['0000D1C2', '00005C5C', '00003FC4', '00006CBC', '000085B8', '0000F717', '000076D9', '00000A9E'] fl=0A92
+      seg1 C=166B U=D668; ip C=1780 U=F9B7
+    13 C accepts, UC rejects:xor
+      66673291521a143d25cace624a
+    12 C accepts, UC rejects:jno
+      6626670f81bd2d17dcc741fec2c5a4
+    11 C accepts, UC rejects:adc
+      6713a6fb668a24180d70dad7
+    11 C accepts, UC rejects:sub
+      6728a98df77b3eb31ab3d448
+    11 C accepts, UC rejects:jge
+      66650f8d1036f4f6ebd91008c49b
+    10 C accepts, UC rejects:jo
+      660f80a07b197157e4c4960cfe
+    10 div
+      f7b02edf8d28a974450e22  [div word ptr [bx + si - 0x20d2]] regs=['00008E1F', '0000C058', '0000C765', '0000E094', '000049EB', '0000317D', '000012CB', '00001C84'] fl=0E92
+      r4 C=000049E5 U=000049EB; seg1 C=1A4B U=1000; ip C=F130 U=EE17; flags C=0C92 U=0E92 diff=0200; mem 6 bytes differ first@449E5 C=17 U=2C
+     9 C accepts, UC rejects:jp
+      660f8abe0f22fb760037d77222
+     9 C accepts, UC rejects:jl
+      66670f8c3aabd1ce2fd17fa3c238
+     8 C accepts, UC rejects:js
+      660f88f04c80a2f59154191c05
+     8 C accepts, UC rejects:jne
+      660f855f24a1d7f7c09815c3af
+     8 C accepts, UC rejects:add
+      67038b0be7c30c1ecdf283ec
+     7 C accepts, UC rejects:sbb
+      67199fe022a1daca95f9b13e
+     7 C accepts, UC rejects:and
+      67238a881f7730229a347f0d
+     7 C accepts, UC rejects:je
+      66650f848d1bc6cdec50afbee93d
+     7 C accepts, UC rejects:xchg
+      66678796611dd5de5a90cb770d
+     7 C accepts, UC rejects:jg
+      660f8f44d9121feefcc5ea7ee4
+     7 C accepts, UC rejects:jb
+      660f82e6e33b7cd18f781a4f61
+     6 movsd
+      f266a5a82beb955959a6166fc4  [movsd dword ptr es:[di], dword ptr [si]] regs=['0000E53E', '00000002', '00005EF8', '0000409B', '0000D192', '00009858', '00006A59', '00001FF5'] fl=0A57
+      r1 C=00000000 U=00000001; r6 C=00006A61 U=00006A5D; r7 C=00001FFD U=00001FF9; ip C=9ACF U=9ACC; mem 4 bytes differ first@31FF9 C=87 U=6A
+     6 C accepts, UC rejects:imul
+      65676b89e3d11b241a54ae3a5c
+     6 C accepts, UC rejects:shrd
+      670fad8a4b19ddd3cf84c417e9
+     6 C accepts, UC rejects:sets
+      670f98bd28e3028b69096f790e
+     6 C accepts, UC rejects:jae
+      660f83c3c6dab6a29f030a468d
+     5 C accepts, UC rejects:test
+      6785b46f69fa96b5cd8ffb17
+     4 C accepts, UC rejects:seto
+      66670f909099986e55cc0229348d
+     4 C accepts, UC rejects:setl
+      36670f9cb73040e439556a882f9b
+     4 C accepts, UC rejects:??
+      36678f8ad34cbae8a61ad58c5c
+     4 C accepts, UC rejects:bsf
+      66670fbca6f3cfde66c60653a40a
+     4 C accepts, UC rejects:setne
+      670f95a204ef7f1b912241aa56
+     4 C accepts, UC rejects:movzx
+      670fb6949d8cbb1a976d82e1ba
+     4 C accepts, UC rejects:cmp
+      3e673b84bf63bc5c7d0fa584e4
+     4 C accepts, UC rejects:bts
+      66670fbaa897cf220360ee506ce8
+     3 C accepts, UC rejects:ja
+      66360f879de225adf39582031a7b
+     3 C accepts, UC rejects:setbe
+      670f96b89fab33fa79885a9732
+     3 C accepts, UC rejects:shld
+      670fa494ffaacf5ef429a298e4
+     3 C accepts, UC rejects:setns
+      670f99a0a494bc02654f0f5662
+     3 C accepts, UC rejects:idiv
+      67f6bc940702b57ebfbadc06
+     2 C accepts, UC rejects:setb
+      670f92867568d8e8a6d7f07543
+     2 C accepts, UC rejects:btc
+      670fbaba48407da0c5cddba50d
+     2 C accepts, UC rejects:setp
+      66670f9aae70ee1cd049bd62b81c
+     2 C accepts, UC rejects:shl
+      6667d3a27cf5b023eb3364a2b0
+     2 C accepts, UC rejects:bt
+      670fa391fa3edbe96897e22cfb
+     2 C accepts, UC rejects:btr
+      36670fb305a2f0fd4754ef992924
+     2 C accepts, UC rejects:movsx
+      66670fbfbd76669c0095cc314810
+     2 C accepts, UC rejects:setae
+      670f9389556d55fd144f95e3e7
+     2 C accepts, UC rejects:sar
+      6667d0be2894c9798091fe4250
+     1 C accepts, UC rejects:setno
+      670f91b9a0bb5a00e0e9ec78ad
+     1 C accepts, UC rejects:rol
+      67d187ce9780a67c131fa708
+cases 20000 {'ok': 19088, 'uc_err': 505, 'skip_undef': 93, 'skip_de': 1, 'bad': 48}
+   263 C unimpl:??
+      8dd5be5e665424b8a92b39
+    45 C accepts, UC rejects:ret
+      6636c29b0ee7a62999f421808c
+    33 C accepts, UC rejects:mov
+      67a1d7b825070663ccf1e004
+    30 C accepts, UC rejects:call
+      6626e838e1b0f71bcd6d9d03a1
+    26 C accepts, UC rejects:jmp
+      66ff23fa6af2d591a6e6d955
+    20 C accepts, UC rejects:jbe
+      66260f86defa25782ada0be1b1fd
+    18 C accepts, UC rejects:jle
+      660f8ebfce04ee06f942ec5d58
+    18 C accepts, UC rejects:jo
+      660f805d7c18cc3ead998666e3
+    17 idiv
+      66f6bd3da4f30d02bd2445c7  [idiv byte ptr [di - 0x5bc3]] regs=['EFE5BDF5', 'B3A50001', 'E92DB82C', '519D3E69', '00008380', '0976F097', '0FB80728', 'E458EDB1'] fl=0EC2
+      r4 C=0000837A U=00008380; seg1 C=08C5 U=1000; ip C=0396 U=7BAA; flags C=0CC2 U=0EC2 diff=0200; mem 6 bytes differ first@4837A C=AA U=50
+    16 test
+      66f70955e5e84c72d44de7a5  [test dword ptr [bx + di], 0x4ce8e555] regs=['DBFF6641', 'B2032CBE', '376BEC74', 'D103749C', '00009584', '03E428A9', 'FC7EAB5A', '62E7140B'] fl=0E17
+      ip C=89C1 U=89BA; flags C=0602 U=0E17 diff=0805
+    15 C accepts, UC rejects:je
+      66670f849af05339a271d8052b53
+    15 C accepts, UC rejects:jae
+      660f83a23ba1ca6270db080001
+    14 C accepts, UC rejects:jne
+      660f852d5855ae025444f121a5
+    14 C accepts, UC rejects:jnp
+      660f8b51cdba3872ecea51e1de
+    13 C accepts, UC rejects:or
+      670aa437ffa52844e3a7dfaf
+    13 C accepts, UC rejects:cmp
+      66673bb6cb0ca4d9cd86c050b4
+    13 C accepts, UC rejects:jno
+      663e0f818fcac1e92aa92fe940da
+    13 C accepts, UC rejects:js
+      66670f8861f86b3fccc606fa1f1c
+    12 C accepts, UC rejects:jns
+      66650f89a9a3ca14233ea517e757
+    12 C accepts, UC rejects:jp
+      660f8a50007c5069464319c7e7
+    11 C accepts, UC rejects:adc
+      67110509f4980b2ee2e9d4a9
+     9 C accepts, UC rejects:sub
+      3e672995f834881edb8f2efb41
+     9 C accepts, UC rejects:jb
+      660f82a6dc83876166f51243f3
+     8 div
+      67f6326923cf42a6700ea987  [div byte ptr [edx]] regs=['0000763E', '00000B65', '0000DD3B', '00001185', '00007541', '0000FE3F', '000012C3', '0000615F'] fl=0652
+      seg1 C=D51C U=6D63; ip C=B98B U=8CD9
+     8 C accepts, UC rejects:jge
+      660f8dbf49310a2fc9802b56b3
+     7 C accepts, UC rejects:add
+      6700b633aace08ed07e29155
+     7 C accepts, UC rejects:imul
+      6664676ba21b9bcd8365d2e8b36a
+     7 C accepts, UC rejects:xor
+      6733a965a73740e5f19c332e
+     6 C accepts, UC rejects:xchg
+      6667872d48de4029dbd0f4b048
+     6 C accepts, UC rejects:test
+      6667859df3ff1ef87bc2cb60fb
+     6 C accepts, UC rejects:sbb
+      671bb5ff86420d268db97621
+     6 movsd
+      f2662ea551a6480343aa6962345f  [movsd dword ptr es:[di], dword ptr cs:[si]] regs=['0000E887', '0000B179', '000096DC', '0000DB79', '00009F90', '0000A97C', '0000A1C3', '0000B5B0'] fl=0E93
+      r1 C=00000000 U=0000B178; r6 C=0000DBDF U=0000A1BF; r7 C=0000EFCC U=0000B5AC; ip C=AD5F U=AD5B; mem 65291 bytes differ first@30000 C=23 U=E1
+     6 C accepts, UC rejects:jl
+      660f8c720544835dcb66876830
+     6 C accepts, UC rejects:ja
+      66670f87d1cadf2ac12db23df9bb
+     4 C accepts, UC rejects:setp
+      670f9a9e4222669da18dbf3f89
+     4 C accepts, UC rejects:and
+      6723b19e07bc244b12dd4c44
+     4 C accepts, UC rejects:shld
+      670fa49dd8f22ccd10180f14e8
+     3 C accepts, UC rejects:movzx
+      670fb78bb00bf6f9259a894b64
+     3 C accepts, UC rejects:setg
+      670f9fbc1efc930535b9b87073
+     3 C accepts, UC rejects:??
+      663e678fb617a18eb3d3155ac1cf
+     3 C accepts, UC rejects:jg
+      660f8f7e8d983830f4fdf94deb
+     3 C accepts, UC rejects:sets
+      670f989b6661d0ae4fce5f5c49
+     3 C accepts, UC rejects:seta
+      670f97b2d0619b01ba956ca080
+     3 C accepts, UC rejects:notrack call
+      663ee82ca0c2e722f371baf5df
+     3 C accepts, UC rejects:shrd
+      670fac0dd09af9010aecf8701d
+     3 C accepts, UC rejects:setle
+      670f9e82a423d257b954bbfbe7
+     3 C accepts, UC rejects:btr
+      64670fb3b61935783d07a83a3375
+     3 C accepts, UC rejects:setae
+      66670f9398d42a97ab4edfc957a7
+     2 C accepts, UC rejects:ror
+      67d18d57317ec48d5525f492
+     2 C accepts, UC rejects:sal
+      6667d3b34d3addc60ed01cac90
+     2 C accepts, UC rejects:rol
+      3667d18292b3f79d72ae7b68c1
+     2 C accepts, UC rejects:bt
+      6626670fa3b045b1262bb9a2322d6b
+     2 C accepts, UC rejects:sete
+      3e670f948f2281ba038fa0d59eb3
+     2 C accepts, UC rejects:setge
+      670f9d89f81ec21e7584abd6fb
+     2 C accepts, UC rejects:setno
+      2e670f91b11648bc5c1013c21f88
+     2 C accepts, UC rejects:rcr
+      666467d39ba3b761b576b47e0ab0
+     2 C unimpl:xabort
+      c6f89bcbee11276c019d20
+     2 C accepts, UC rejects:shr
+      6667c12dc05533c503923a9a53
+     2 C accepts, UC rejects:bsf
+      66670fbcad91554a2a4f57b27000
+     1 C accepts, UC rejects:notrack jmp
+      663ee93960a744b6bd97962fcd
+cases 20000 {'ok': 19104, 'uc_err': 557, 'skip_undef': 97, 'bad': 42, 'skip_de': 1}
+   199 C unimpl:??
+      c754cce9469bd1c339d3c8
+    45 C accepts, UC rejects:ret
+      66c2536a40cf9c7d104dac99
+    35 C accepts, UC rejects:jmp
+      66e98f4f3e1b0469fb969c5e
+    29 C accepts, UC rejects:mov
+      67a230de81a891be787d13b3
+    23 C accepts, UC rejects:call
+      66ff5cdb9a4db096b475e504
+    23 C accepts, UC rejects:jle
+      660f8e893aa9e14f8835fc8cad
+    18 C accepts, UC rejects:jp
+      660f8a7aaef364bfab9a0a6b74
+    17 test
+      f6ce32efb0a27dc4cb1b55  [test dh, 0x32] regs=['D2E2FB97', '7E160010', 'A8A5568B', 'F4185334', '00009576', 'A08B1915', '9AAB1946', '26E193A2'] fl=0293
+      ip C=8F50 U=8F4D; flags C=0206 U=0293 diff=0085
+    15 C accepts, UC rejects:jae
+      660f83c7de8dd1085cd6fef9f5
+    14 C accepts, UC rejects:add
+      366702ad7f0e4dd0f02d557dc4
+    14 C accepts, UC rejects:jne
+      660f85b2c517dbaf47b81ce662
+    13 C accepts, UC rejects:jb
+      660f821bf00b024ea24b225f51
+    13 C accepts, UC rejects:jo
+      66360f80067e1ab942518447bf78
+    13 C accepts, UC rejects:sbb
+      66671a9b126c09023d8d8d610f
+    12 C accepts, UC rejects:test
+      f6cd582c429c53879add1f
+    12 C accepts, UC rejects:cmp
+      673aaa4f98ea72600e187ce5
+    12 C accepts, UC rejects:je
+      660f848f7546d7d86615cbc985
+    12 C accepts, UC rejects:jge
+      66260f8d2b5bf44f7d7f5ecd9bd1
+    11 C accepts, UC rejects:jbe
+      660f861f22a597257eae2f1dc0
+    11 C accepts, UC rejects:sub
+      67298a3f63d123c92df907c6
+    11 C accepts, UC rejects:jns
+      663e0f89d3f1d88773e14f9a76a9
+    11 idiv
+      f73dcfc527e67b67df80e1  [idiv word ptr [di]] regs=['D59FF044', '3C7E5642', '6F4FE9C7', 'DF4DB00B', '00007991', '4A2D5B93', 'A1513A72', '6CE51306'] fl=0246
+      seg1 C=9D37 U=155D; ip C=4EF2 U=6F13
+    10 C accepts, UC rejects:js
+      66670f88ddd9308e4fe915ddb6f6
+    10 C accepts, UC rejects:or
+      67098fd5fc70809f9c458d6f
+    10 C accepts, UC rejects:jnp
+      660f8b8c283cc082a64d078102
+     9 C accepts, UC rejects:jl
+      660f8c1a95bfb3b208af4039cb
+     9 C accepts, UC rejects:jno
+      660f8149033ee65b718f8670f9
+     9 div
+      66f6b099cf6f28532bbea0e5  [div byte ptr [bx + si - 0x3067]] regs=['0000DB0B', '00000002', '0000D5CB', '0000A1B0', '0000F7C0', '0000C5FA', '00007C28', '0000055C'] fl=0EC7
+      r4 C=0000F7BA U=0000F7C0; seg1 C=BE32 U=1000; ip C=B8F9 U=8F45; flags C=0CC7 U=0EC7 diff=0200; mem 6 bytes differ first@4F7BA C=45 U=F3
+     8 C accepts, UC rejects:xor
+      366730150ab879279e5039a23a
+     8 C accepts, UC rejects:adc
+      6710ab18b71c8e1e72af50d5
+     7 C accepts, UC rejects:and
+      666722a26ea8d39565732e0f2d
+     7 C accepts, UC rejects:ja
+      660f87afdb62e761af8bc838e6
+     6 C accepts, UC rejects:movzx
+      670fb6a733d1dc113fe7eaaf49
+     6 C accepts, UC rejects:jg
+      66670f8f6d238734b89092e9adf4
+     5 C accepts, UC rejects:seta
+      670f972c75adadf74a4e598d1b
+     5 C accepts, UC rejects:imul
+      67699d811a974f80625281e6
+     5 C accepts, UC rejects:setno
+      670f91a3423cfce6d2b60d3fab
+     4 C accepts, UC rejects:sets
+      670f98bdc0b72d24cab1a2528d
+     4 C accepts, UC rejects:setp
+      6665670f9aa821c60dfac394d43f67
+     4 C accepts, UC rejects:movsx
+      670fbfb66f69a32d9185ef82d0
+     4 C accepts, UC rejects:rcl
+      67d1949a194598eacf427053
+     4 C accepts, UC rejects:setl
+      670f9c9469caeecd6f2024f40f
+     4 movsd
+      f266a540f741b935286a6e3148  [movsd dword ptr es:[di], dword ptr [si]] regs=['0000934B', '00009C9C', '00006B82', '00009FD8', '0000E3D1', '00005708', '00007277', '0000CF16'] fl=0697
+      r1 C=00000000 U=00009C9B; r6 C=00000007 U=00007273; r7 C=00005CA6 U=0000CF12; ip C=A3D7 U=A3D4; mem 65275 bytes differ first@30002 C=6D U=FD
+     4 C accepts, UC rejects:setbe
+      66670f96a3212041b3da27c10a43
+     4 C accepts, UC rejects:shr
+      67d0ae8dee729609525a42ee
+     4 C accepts, UC rejects:bt
+      670fa3876adafb22bed98acfda
+     3 C accepts, UC rejects:setle
+      670f9e97d1a832081e4f898c34
+     3 C accepts, UC rejects:setg
+      66670f9f9b9f827155b33cf75b7e
+     3 C accepts, UC rejects:??
+      6665678f9e19dcbf366a54391098
+     3 C accepts, UC rejects:setb
+      66670f92964824bc1bdf94b941d4
+     3 C accepts, UC rejects:shld
+      66670fa58b4609caa6146ef6f795
+     2 C accepts, UC rejects:rcr
+      67d29c72eaefb382f8285bbe
+     2 C accepts, UC rejects:xchg
+      2e67878bc5eac0f4f9359189a0
+     2 C accepts, UC rejects:shl
+      67d325a25cdf1158d5da95cd
+     2 C accepts, UC rejects:setae
+      670f938c5302d955fb63dcd6fe
+     2 C accepts, UC rejects:ror
+      6667d20d6daaa4809721217acc
+     2 C accepts, UC rejects:bsf
+      670fbc86e657fd0a30ffd3f09d
+     1 C accepts, UC rejects:sar
+      67d2bc7f305cd93b9d677abf
+     1 C accepts, UC rejects:rol
+      67c181620c22b25171aaba7e
+     1 C accepts, UC rejects:btc
+      670fbb8e161278b93af6f09781
+cases 20000 {'ok': 19087, 'uc_err': 493, 'skip_undef': 88, 'skip_de': 1, 'bad': 58}
+   273 C unimpl:??
+      66c6fa107abcea933ddafbc3
+    63 C accepts, UC rejects:ret
+      66c3298b097275e676cd09fa
+    40 C accepts, UC rejects:call
+      6667e8508e424624015a117142
+    40 C accepts, UC rejects:mov
+      67a3d29a4732e9f2c71ce832
+    33 C accepts, UC rejects:jmp
+      66ff2fca5f6dd1c865c9d51f
+    22 test
+      66f60f93882ab396d1238c49  [test byte ptr [bx], -0x6d] regs=['000023B9', '00000011', '0000CB85', '0000B3EE', '0000BD66', '000075F5', '00006F0F', '0000FCDA'] fl=0246
+      ip C=4AAF U=4AAB; flags C=0286 U=0246 diff=00C0
+    16 C accepts, UC rejects:jle
+      663e0f8e6acfdddea9f074a53f6c
+    16 div
+      67f6746007fa409ddff0768e  [div byte ptr [eax + 7]] regs=['0000A286', '0000AB87', '00001319', '0000DD49', '0000591A', '00001AFE', '0000E4B0', '0000698B'] fl=0247
+      r4 C=00005914 U=0000591A; seg1 C=AB31 U=1000; ip C=1206 U=BA70; flags C=0047 U=0247 diff=0200; mem 6 bytes differ first@45914 C=70 U=C3
+    14 idiv
+      66f67b6ed3f173a2f4a8c7bf  [idiv byte ptr [bp + di + 0x6e]] regs=['DB187F9F', '2367DF6D', '03A95F58', '03231479', '00000FE3', '56A4347C', '2ED89BC4', '842490B8'] fl=0AC7
+      seg1 C=21EF U=7323; ip C=1D1D U=59B1
+    14 C accepts, UC rejects:je
+      660f84da3c6c0b783d1838e17a
+    13 C accepts, UC rejects:jae
+      660f83b9d61b2bd4df381e1ee4
+    12 C accepts, UC rejects:jns
+      660f89633b249305795f1d3a63
+    12 C accepts, UC rejects:cmp
+      666738a170cf8e6b6f8cd5ae8b
+    12 C accepts, UC rejects:adc
+      6667119be648e2809f33cb527c
+    12 C accepts, UC rejects:jne
+      660f855f66bb285e171b3522f4
+    12 C accepts, UC rejects:jo
+      660f80c405a529d1d2abb351f3
+    12 C accepts, UC rejects:jbe
+      660f86d01bd649828134f730f2
+    11 C accepts, UC rejects:jb
+      660f821a6c870e45f93ae1bd2a
+    11 C accepts, UC rejects:or
+      65670a353398e81f6f609a6863
+    10 C accepts, UC rejects:sbb
+      671a8196d2d7636403fa3381
+    10 C accepts, UC rejects:sub
+      3e672b1566a53320ebc8357602
+    10 C accepts, UC rejects:test
+      f60d6fd3cc1fadfaee8dd4
+    10 C accepts, UC rejects:jno
+      66670f817ff67f07ee865c8443b9
+    10 C accepts, UC rejects:and
+      66672381354a5b23ffe3ce3b0e
+     9 C accepts, UC rejects:jnp
+      660f8b61993481aaa48958ec3f
+     9 C accepts, UC rejects:xor
+      6731b7bb625601a6c41662ba
+     7 C accepts, UC rejects:js
+      660f883e9a13d0550cd18fd98d
+     6 C accepts, UC rejects:jl
+      660f8cd087391d02eb9e6b7dde
+     6 C accepts, UC rejects:imul
+      670fafba6b977a0559cf1b5e21
+     5 C accepts, UC rejects:shld
+      670fa5ba4b85ce47599ab14349
+     5 movsd
+      f266a501dde92dd82f34f9f2a6  [movsd dword ptr es:[di], dword ptr [si]] regs=['4148BF02', '121A1B87', '50F111CF', '0F02F7A2', '0000BB99', 'D1F6615E', '1E5C696A', '4991198D'] fl=0EC2
+      r1 C=121A0000 U=121A1B86; r6 C=1E5CFB4E U=1E5C6966; r7 C=4991AB71 U=49911989; ip C=153A U=1537; mem 28098 bytes differ first@30001 C=C9 U=78
+     5 C accepts, UC rejects:jge
+      660f8dfe53168cd46695d151df
+     4 C accepts, UC rejects:jg
+      660f8f99333084b367cac326e1
+     4 C accepts, UC rejects:btc
+      670fbaba35fceb791c6204ac23
+     4 C accepts, UC rejects:add
+      66266702a410409e8c8014845c9b
+     4 C accepts, UC rejects:jp
+      660f8ab52b0a2d94bcfe6fb17b
+     3 C accepts, UC rejects:movzx
+      66670fb695a7011760f1782bcc5c
+     3 C accepts, UC rejects:rol
+      67d085e292f614112cc55cee
+     3 C accepts, UC rejects:setno
+      670f918d27e0d5cebd1cf4a246
+     3 C accepts, UC rejects:rcl
+      6667d015b1b99a0f032c08f010
+     2 C accepts, UC rejects:setbe
+      670f96804e059633f1f1a5f590
+     2 C accepts, UC rejects:xchg
+      67879df4cdabd7db014a06f2
+     2 C accepts, UC rejects:setnp
+      670f9b9722729015e60802ef1f
+     2 C accepts, UC rejects:setne
+      66670f95a30836d405dbe306ab8a
+     2 C accepts, UC rejects:shrd
+      670fac80293a5ebcbb927f1f75
+     2 C accepts, UC rejects:sal
+      67c1b5fb842368a1c1aa5a84
+     2 C accepts, UC rejects:seta
+      66670f97958e7893686c165ce261
+     2 C accepts, UC rejects:bsf
+      670fbcac2809afc3102a798a71
+     2 C accepts, UC rejects:shr
+      67d1acdd720f8916c54a25d1
+     2 C accepts, UC rejects:seto
+      663e670f908f90852a114f4526fa57
+     2 C accepts, UC rejects:inc
+      6667ff81976223ed69d5eacd42
+     2 C accepts, UC rejects:bt
+      670fa3a5cf7226c0367d6b21ee
+     2 C accepts, UC rejects:sets
+      670f98813abf53082d189c9f65
+     2 C accepts, UC rejects:sete
+      66670f94a9c49a3f9401483296d9
+     2 C accepts, UC rejects:shl
+      6667d1a4a1be781e9f92a56faa
+     1 C accepts, UC rejects:setae
+      670f93a73b063c0a81f43a0bb1
+     1 C accepts, UC rejects:idiv
+      6667f7b920eb54495266967751
+     1 C accepts, UC rejects:ja
+      660f879c541495b487c6c4d5d7
+     1 C accepts, UC rejects:bts
+      670fabb7651db669284e22e865
+     1 C accepts, UC rejects:int
+      cd0695617fd0c4dd99182d

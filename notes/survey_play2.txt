@@ -1,0 +1,549 @@
+stop: None  insns~700,001,238  wall 94.7s  at 01C9:01EE
+font uploads: 4
+args=['-s5', '-a220', '-i7', '-c1'] env=[] keys left=0 idle-polls=217035
+
+== ports (dir port count first-at)
+  out 0002        8  24ED:6103
+  in  0003        4  24ED:606A
+  out 0003        8  24ED:6112
+  out 000A       13  24ED:60DA
+  out 000B        4  24ED:60E4
+  out 000C        6  24ED:60DC
+  out 0020     2493  24ED:63D1
+  in  0021     4776  24ED:630A
+  out 0021     4945  24ED:61B1
+  out 0040     4946  24ED:2867
+  in  0042     4936  24ED:5044
+  out 0042     4936  24ED:5034
+  out 0043     7409  24ED:2854
+  in  0061        1  0000:0E1E
+  out 0061        1  0000:0E24
+  out 0083        4  24ED:610B
+  in  00A1        4  24ED:618B
+  out 00A1        9  24ED:61B5
+  out 0224      156  24ED:2A1C
+  in  0225       75  24ED:62BB
+  out 0225       81  24ED:2A2A
+  out 0226       18  24ED:6307
+  in  022A        9  24ED:62FA
+  in  022C     6498  24ED:62CB
+  out 022C      128  24ED:62D8
+  in  022E       34  24ED:62E8
+  out 0388     1800  24ED:4B20
+  in  0389    66600  24ED:4B22
+  out 0389     1800  24ED:4B2B
+  out 03C0      102  30C9:020A
+  out 03C2        1  30C9:0200
+  out 03C4       18  30C9:01F6
+  out 03C8        3  30C9:00BD
+  out 03C9      144  30C9:00C3
+  out 03CE       24  30C9:023B
+  in  03DA     5002  30C9:0204
+
+== services (int ah count first-at)
+  INT 10 AH=00        1  30C9:01E0 AX=0003
+  INT 10 AH=02        8  30C9:1342 AX=0233
+  INT 10 AH=05        1  30C9:13B5 AX=0500
+  INT 10 AH=10        1  30C9:01F0 AX=1003
+  INT 10 AH=11        1  30C9:01E8 AX=1112
+  INT 16 AH=00        5  2C79:41C3 AX=0020
+  INT 16 AH=01   217046  01C9:01EE AX=0100
+  INT 16 AH=02        5  3A94:83AE AX=02C3
+  INT 21 AH=0E       29  2C79:42D7 AX=0E03
+  INT 21 AH=19       34  2C79:404E AX=19F8
+  INT 21 AH=1A       30  2C79:41F6 AX=1A4E
+  INT 21 AH=25        3  2C79:0129 AX=2500
+  INT 21 AH=2F       15  2C79:41F2 AX=2F4E
+  INT 21 AH=30        2  2C79:0016 AX=3000
+  INT 21 AH=35        2  2C79:0117 AX=3500
+  INT 21 AH=36        2  2C79:4222 AX=36A6
+  INT 21 AH=3B        3  2C79:401C AX=3BF4
+  INT 21 AH=3D        3  2C79:1E5D AX=3D00
+  INT 21 AH=3E        1  2C79:1D8A AX=3E05
+  INT 21 AH=3F        1  2C79:2014 AX=3F00
+  INT 21 AH=40       12  2C79:2212 AX=400A
+  INT 21 AH=43        2  2C79:1F8F AX=4300
+  INT 21 AH=44        7  2C79:01B5 AX=4400
+  INT 21 AH=47        7  2C79:2D8F AX=47B4
+  INT 21 AH=48       18  2C79:24E9 AX=4800
+  INT 21 AH=49        3  2C79:2CB6 AX=4900
+  INT 21 AH=4A        4  2C79:008D AX=4A01
+  INT 21 AH=4E        4  2C79:4204 AX=4E4E
+  INT 21 AH=4F       11  2C79:4204 AX=4F4F
+  INT 08            641  2C79:0016 AX=0005
+  IRQ0           2469  
+  IRQ7             25  
+
+== hooked vectors (not pointing to BIOS stubs)
+  INT 00 -> 24ED:5617 (load-rel)
+  INT 08 -> 24ED:28CD (load-rel)
+  INT 0F -> 24ED:635F (load-rel)
+  INT 23 -> 2C79:3571 (load-rel)
+  INT 24 -> 2C79:427D (load-rel)
+
+== SB/DMA log (first 300)
+24ED:60DA DMA out 0A,05
+24ED:60DC DMA out 0C,05
+24ED:60E4 DMA out 0B,59
+24ED:6103 DMA out 02,60
+24ED:6107 DMA out 02,2C
+24ED:610B DMA out 83,03
+24ED:6112 DMA out 03,15
+24ED:6116 DMA out 03,00
+24ED:611A DMA out 0A,01
+24ED:62D8 DSP 40 83
+24ED:62D8 DSP 14 04 00
+24ED:6068 DMA out 0C,00
+24ED:63C9 DSP 14 04 00
+24ED:63C9 DSP 14 04 00
+24ED:6068 DMA out 0C,00
+24ED:617B DMA out 0A,05
+24ED:62D8 DSP D1 
+24ED:62D8 DSP 40 E9
+24ED:62D8 DSP 48 E8 FD
+24ED:62D8 DSP 91 
+24ED:60DA DMA out 0A,05
+24ED:60DC DMA out 0C,05
+24ED:60E4 DMA out 0B,59
+24ED:6103 DMA out 02,50
+24ED:6107 DMA out 02,2E
+24ED:610B DMA out 83,05
+24ED:6112 DMA out 03,FF
+24ED:6116 DMA out 03,03
+24ED:611A DMA out 0A,01
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:617B DMA out 0A,05
+24ED:62D8 DSP D3 
+24ED:617B DMA out 0A,05
+24ED:62D8 DSP D3 
+24ED:62D8 DSP D1 
+24ED:62D8 DSP 40 E9
+24ED:62D8 DSP 48 E8 FD
+24ED:62D8 DSP 91 
+24ED:60DA DMA out 0A,05
+24ED:60DC DMA out 0C,05
+24ED:60E4 DMA out 0B,59
+24ED:6103 DMA out 02,50
+24ED:6107 DMA out 02,2E
+24ED:610B DMA out 83,05
+24ED:6112 DMA out 03,FF
+24ED:6116 DMA out 03,03
+24ED:611A DMA out 0A,01
+24ED:617B DMA out 0A,05
+24ED:62D8 DSP D3 
+24ED:617B DMA out 0A,05
+24ED:62D8 DSP D3 
+24ED:62D8 DSP D1 
+24ED:62D8 DSP 40 E9
+24ED:62D8 DSP 48 E8 FD
+24ED:62D8 DSP 91 
+24ED:60DA DMA out 0A,05
+24ED:60DC DMA out 0C,05
+24ED:60E4 DMA out 0B,59
+24ED:6103 DMA out 02,50
+24ED:6107 DMA out 02,2E
+24ED:610B DMA out 83,05
+24ED:6112 DMA out 03,FF
+24ED:6116 DMA out 03,03
+24ED:611A DMA out 0A,01
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+24ED:639E DSP 48 E8 FD
+24ED:63A7 DSP 91 
+
+== VGA reg writes (first 400)
+30C9:01F6 out16 3C4,0403
+30C9:01FA out16 3C4,0101
+30C9:0200 out8 3C2,63
+30C9:020A out8 3C0,13
+30C9:020D out8 3C0,00
+30C9:0210 out8 3C0,32
+30C9:023B out16 3CE,0C06
+30C9:0246 out16 3CE,0005
+30C9:0251 out16 3C4,0604
+30C9:025C out16 3CE,0204
+30C9:0267 out16 3C4,0402
+30C9:02A7 out16 3CE,0E06
+30C9:02B2 out16 3CE,1005
+30C9:02BD out16 3C4,0304
+30C9:02C8 out16 3CE,0004
+30C9:02D3 out16 3C4,0302
+30C9:0101 out16 3CE,0C06
+30C9:010C out16 3CE,0005
+30C9:0117 out16 3C4,0604
+30C9:0122 out16 3CE,0204
+30C9:012D out16 3C4,0402
+30C9:0173 out16 3CE,0E06
+30C9:017E out16 3CE,1005
+30C9:0189 out16 3C4,0304
+30C9:0194 out16 3CE,0004
+30C9:019F out16 3C4,0302
+30C9:00A9 out8 3C0,00
+30C9:00AA out8 3C0,00
+30C9:00A9 out8 3C0,01
+30C9:00AA out8 3C0,01
+30C9:00A9 out8 3C0,02
+30C9:00AA out8 3C0,02
+30C9:00A9 out8 3C0,03
+30C9:00AA out8 3C0,03
+30C9:00A9 out8 3C0,04
+30C9:00AA out8 3C0,04
+30C9:00A9 out8 3C0,05
+30C9:00AA out8 3C0,05
+30C9:00A9 out8 3C0,06
+30C9:00AA out8 3C0,06
+30C9:00A9 out8 3C0,07
+30C9:00AA out8 3C0,07
+30C9:00A9 out8 3C0,08
+30C9:00AA out8 3C0,08
+30C9:00A9 out8 3C0,09
+30C9:00AA out8 3C0,09
+30C9:00A9 out8 3C0,0A
+30C9:00AA out8 3C0,0A
+30C9:00A9 out8 3C0,0B
+30C9:00AA out8 3C0,0B
+30C9:00A9 out8 3C0,0C
+30C9:00AA out8 3C0,0C
+30C9:00A9 out8 3C0,0D
+30C9:00AA out8 3C0,0D
+30C9:00A9 out8 3C0,0E
+30C9:00AA out8 3C0,0E
+30C9:00A9 out8 3C0,0F
+30C9:00AA out8 3C0,0F
+30C9:00B1 out8 3C0,20
+30C9:00BD out8 3C8,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,14
+30C9:00C3 out8 3C9,11
+30C9:00C6 out8 3C9,0A
+30C9:00C3 out8 3C9,29
+30C9:00C6 out8 3C9,24
+30C9:00C3 out8 3C9,15
+30C9:00C6 out8 3C9,3F
+30C9:00C3 out8 3C9,37
+30C9:00C6 out8 3C9,21
+30C9:00C3 out8 3C9,39
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,2C
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,3F
+30C9:00C6 out8 3C9,3F
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,26
+30C9:00C3 out8 3C9,25
+30C9:00C6 out8 3C9,24
+30C9:00C3 out8 3C9,05
+30C9:00C6 out8 3C9,09
+30C9:00C3 out8 3C9,16
+30C9:00C6 out8 3C9,06
+30C9:00C3 out8 3C9,0C
+30C9:00C6 out8 3C9,1D
+30C9:00C3 out8 3C9,12
+30C9:00C6 out8 3C9,10
+30C9:00C3 out8 3C9,0F
+30C9:00C6 out8 3C9,0C
+30C9:00C3 out8 3C9,0B
+30C9:00C6 out8 3C9,0A
+30C9:00C3 out8 3C9,22
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,2C
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,26
+30C9:00C3 out8 3C9,25
+30C9:00C6 out8 3C9,24
+30C9:0101 out16 3CE,0C06
+30C9:010C out16 3CE,0005
+30C9:0117 out16 3C4,0604
+30C9:0122 out16 3CE,0204
+30C9:012D out16 3C4,0402
+30C9:0173 out16 3CE,0E06
+30C9:017E out16 3CE,1005
+30C9:0189 out16 3C4,0304
+30C9:0194 out16 3CE,0004
+30C9:019F out16 3C4,0302
+30C9:00A9 out8 3C0,00
+30C9:00AA out8 3C0,00
+30C9:00A9 out8 3C0,01
+30C9:00AA out8 3C0,01
+30C9:00A9 out8 3C0,02
+30C9:00AA out8 3C0,02
+30C9:00A9 out8 3C0,03
+30C9:00AA out8 3C0,03
+30C9:00A9 out8 3C0,04
+30C9:00AA out8 3C0,04
+30C9:00A9 out8 3C0,05
+30C9:00AA out8 3C0,05
+30C9:00A9 out8 3C0,06
+30C9:00AA out8 3C0,06
+30C9:00A9 out8 3C0,07
+30C9:00AA out8 3C0,07
+30C9:00A9 out8 3C0,08
+30C9:00AA out8 3C0,08
+30C9:00A9 out8 3C0,09
+30C9:00AA out8 3C0,09
+30C9:00A9 out8 3C0,0A
+30C9:00AA out8 3C0,0A
+30C9:00A9 out8 3C0,0B
+30C9:00AA out8 3C0,0B
+30C9:00A9 out8 3C0,0C
+30C9:00AA out8 3C0,0C
+30C9:00A9 out8 3C0,0D
+30C9:00AA out8 3C0,0D
+30C9:00A9 out8 3C0,0E
+30C9:00AA out8 3C0,0E
+30C9:00A9 out8 3C0,0F
+30C9:00AA out8 3C0,0F
+30C9:00B1 out8 3C0,20
+30C9:00BD out8 3C8,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,14
+30C9:00C3 out8 3C9,11
+30C9:00C6 out8 3C9,0A
+30C9:00C3 out8 3C9,29
+30C9:00C6 out8 3C9,24
+30C9:00C3 out8 3C9,15
+30C9:00C6 out8 3C9,3F
+30C9:00C3 out8 3C9,37
+30C9:00C6 out8 3C9,21
+30C9:00C3 out8 3C9,04
+30C9:00C6 out8 3C9,16
+30C9:00C3 out8 3C9,04
+30C9:00C6 out8 3C9,02
+30C9:00C3 out8 3C9,0E
+30C9:00C6 out8 3C9,02
+30C9:00C3 out8 3C9,3F
+30C9:00C6 out8 3C9,3F
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,26
+30C9:00C3 out8 3C9,25
+30C9:00C6 out8 3C9,24
+30C9:00C3 out8 3C9,04
+30C9:00C6 out8 3C9,16
+30C9:00C3 out8 3C9,04
+30C9:00C6 out8 3C9,06
+30C9:00C3 out8 3C9,0C
+30C9:00C6 out8 3C9,1D
+30C9:00C3 out8 3C9,12
+30C9:00C6 out8 3C9,10
+30C9:00C3 out8 3C9,0F
+30C9:00C6 out8 3C9,0C
+30C9:00C3 out8 3C9,0B
+30C9:00C6 out8 3C9,0A
+30C9:00C3 out8 3C9,22
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,2C
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,26
+30C9:00C3 out8 3C9,25
+30C9:00C6 out8 3C9,24
+30C9:0101 out16 3CE,0C06
+30C9:010C out16 3CE,0005
+30C9:0117 out16 3C4,0604
+30C9:0122 out16 3CE,0204
+30C9:012D out16 3C4,0402
+30C9:0173 out16 3CE,0E06
+30C9:017E out16 3CE,1005
+30C9:0189 out16 3C4,0304
+30C9:0194 out16 3CE,0004
+30C9:019F out16 3C4,0302
+30C9:00A9 out8 3C0,00
+30C9:00AA out8 3C0,00
+30C9:00A9 out8 3C0,01
+30C9:00AA out8 3C0,01
+30C9:00A9 out8 3C0,02
+30C9:00AA out8 3C0,02
+30C9:00A9 out8 3C0,03
+30C9:00AA out8 3C0,03
+30C9:00A9 out8 3C0,04
+30C9:00AA out8 3C0,04
+30C9:00A9 out8 3C0,05
+30C9:00AA out8 3C0,05
+30C9:00A9 out8 3C0,06
+30C9:00AA out8 3C0,06
+30C9:00A9 out8 3C0,07
+30C9:00AA out8 3C0,07
+30C9:00A9 out8 3C0,08
+30C9:00AA out8 3C0,08
+30C9:00A9 out8 3C0,09
+30C9:00AA out8 3C0,09
+30C9:00A9 out8 3C0,0A
+30C9:00AA out8 3C0,0A
+30C9:00A9 out8 3C0,0B
+30C9:00AA out8 3C0,0B
+30C9:00A9 out8 3C0,0C
+30C9:00AA out8 3C0,0C
+30C9:00A9 out8 3C0,0D
+30C9:00AA out8 3C0,0D
+30C9:00A9 out8 3C0,0E
+30C9:00AA out8 3C0,0E
+30C9:00A9 out8 3C0,0F
+30C9:00AA out8 3C0,0F
+30C9:00B1 out8 3C0,20
+30C9:00BD out8 3C8,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,14
+30C9:00C3 out8 3C9,11
+30C9:00C6 out8 3C9,0A
+30C9:00C3 out8 3C9,29
+30C9:00C6 out8 3C9,24
+30C9:00C3 out8 3C9,15
+30C9:00C6 out8 3C9,3F
+30C9:00C3 out8 3C9,37
+30C9:00C6 out8 3C9,21
+30C9:00C3 out8 3C9,39
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,2C
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,3F
+30C9:00C6 out8 3C9,3F
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,26
+30C9:00C3 out8 3C9,25
+30C9:00C6 out8 3C9,24
+30C9:00C3 out8 3C9,05
+30C9:00C6 out8 3C9,09
+30C9:00C3 out8 3C9,16
+30C9:00C6 out8 3C9,06
+30C9:00C3 out8 3C9,0C
+30C9:00C6 out8 3C9,1D
+30C9:00C3 out8 3C9,12
+30C9:00C6 out8 3C9,10
+30C9:00C3 out8 3C9,0F
+30C9:00C6 out8 3C9,0C
+30C9:00C3 out8 3C9,0B
+30C9:00C6 out8 3C9,0A
+30C9:00C3 out8 3C9,22
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,2C
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,00
+30C9:00C3 out8 3C9,00
+30C9:00C6 out8 3C9,26
+30C9:00C3 out8 3C9,25
+30C9:00C6 out8 3C9,24
+
+== console output
+    SOUNDCARD 5 selected. (Mixrate set to 44000)
+    IO ADDRESS 220 selected.
+    IRQ 7 selected.
+    DMA CHANNEL 1 selected.
+[0m        Initializing sound... Testing sound... done.
+        Output: CARD:SoundBlaster Pro IO:220 IRQ:7 DMA:1 MIX@:44Khz
+
+
+
+== screen
+αφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφπ
+∩     Scream Tracker V3.21         Copyright (C) 1993,1994 Sami Tammilehto     ε
+∩           δ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞         δ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞   ε
+∩       Songε                             π    Fileε                        π  ε
+∩ Instrumentε01:                           ∩  Chordεnone                     ∩ ε
+∩      Orderε000/000αφφφφφπ  αφφφφφφφφφφπ  ∩C.Tempoε7Dαφφφφφφφφφφφφφφφφφφφπ  ∩ ε
+∩    Patternε00αφφφφΘ  Rowε01∩   Channelε01∩C.Speedε06∩         Baseoctaveε 3∩ ε
+∩            φφΘ           φφΘ           φφΘ        φφΘ                    φφΘ ε
+∩  Loading file ARMANI.S3M...                                  FreeMem:  274K  ε
+∩                                                              FreeEMS: 0000K  ε
+∩  ESC ..... Main Menu     F1..F4 .. Edit Screen                               ε
+∩  F10 ..... Quick-Help    CTRL-L .. Load Module                               ε
+∩  CTRL-Q .. Quit to DOS   F5/F8 ... Play / Stop                               ε
+∩                                                                              ε
+∩²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²Retrieve Module²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²ε
+∩ δ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞                      ε
+∩ ε*.STM,*.S3M,*.MOD                                     ∩  Diskfree: 131068K  ε
+∩  φφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφΘ                     ε
+∩  Directory: C:\ST3                                                           ε
+∩ δ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞ δ∞∞∞∞∞∞∞∞∞∞∞∞                      ε
+∩ εARMANI.S3M                              ∩εI           ∩  √ Autodetect       ε
+∩ εDEF.S3M                                 ∩εS           ∩                     ε
+∩ εTECHNOLO.MOD                            ∩εC:          ∩  - Scrm Trcker 3 S3Mε
+∩ ε                                        ∩ε            ∩  - Scrm Trcker 2 STMε
+∩ ε                                        ∩ε            ∩  - Standard (pt) MODε
+∩ ε                                        ∩ε            ∩  - 5..10 channel MODε
+∩ ε                                        ∩ε            ∩  - Sound Tracker MODε
+∩ ε                                        ∩ε            ∩  - Oktalyzer     MODε
+∩ ε                                        ∩ε            ∩  - Fasttracker   MODε
+∩ ε                                        ∩ε            ∩  - Import format TMPε
+∩ ε             αφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφε             ε
+∩ ε             ∩ Current song is about to be erased! Continue?  ε             ε
+∩ ε             ∩                δ∞∞∞∞∞∞∞∞∞∞∞∞∞                  ε             ε
+∩ ε             ∩                εαφφφYφπαφφNφπ∩                 ε             ε
+∩ ε             ∩                ε∩ Yes ε∩ No ε∩                 ε             ε
+∩ ε             ∩                εΓ∞∞∞∞∞ßΓ∞∞∞∞ß∩                 ε             ε
+∩ ε             ∩                 φφφφφφφφφφφφφΘ                 ε             ε
+∩ ε             ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞ß             ε
+∩ ε                                        ∩ε            ∩                     ε
+∩ ε                                        ∩ε            ∩                     ε
+∩ ε                                        ∩ε            ∩                     ε
+∩ ε                                        ∩ε            ∩                     ε
+∩ ε                                        ∩ε            ∩                     ε
+∩ ε                                        ∩ε            ∩                     ε
+∩ ε                                        ∩ε            ∩                     ε
+∩ ε                                        ∩ε            ∩                     ε
+∩ ε                                        ∩ε            ∩                     ε
+∩ ε                                        ∩ε            ∩                     ε
+∩  φφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφφΘ φφφφφφφφφφφφΘ                     ε
+Γ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞ß
