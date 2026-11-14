@@ -29,6 +29,7 @@ static struct termios tio_saved;
 static int tio_ok;
 static volatile sig_atomic_t winch = 1, want_quit;
 static int term_rows = 24, term_cols = 80, term_xpix, term_ypix;
+static int q_cw, q_ch, q_sixel, q_da;    /* terminal replies: cell size (CSI 16 t), sixel in DA1, DA1 seen */
 static Gfx G;
 static VgaFrame VF;
 
@@ -99,10 +100,18 @@ static void parse_input(int flush_esc) {
         if (i + 1 >= ilen) { if (flush_esc) { push_key(K_ESC, 0); i++; } break; }
         uint8_t c1 = ibuf[i + 1];
         if (c1 == '[' || c1 == 'O') {
-            int j = i + 2, p[4] = {0, 0, 0, 0}, np = 0;
+            int j = i + 2, p[4] = {0, 0, 0, 0}, np = 0, priv = 0, sixel = 0, cur = 0;
+            if (c1 == '[' && j < ilen && (ibuf[j] == '?' || ibuf[j] == '>')) { priv = 1; j++; }
             while (j < ilen && ((ibuf[j] >= '0' && ibuf[j] <= '9') || ibuf[j] == ';')) {
-                if (ibuf[j] == ';') { if (np < 3) np++; } else p[np] = p[np] * 10 + (ibuf[j] - '0');
+                if (ibuf[j] == ';') { if (cur == 4) sixel = 1; cur = 0; if (np < 3) np++; }
+                else { p[np] = p[np] * 10 + (ibuf[j] - '0'); cur = cur * 10 + (ibuf[j] - '0'); }
                 j++;
+            }
+            if (cur == 4) sixel = 1;
+            if (j < ilen && (priv || ibuf[j] == 't')) {          /* terminal replies, never keys */
+                if (priv && ibuf[j] == 'c' && ibuf[i + 2] == '?') { q_da = 1; q_sixel = sixel; }
+                if (ibuf[j] == 't' && p[0] == 6 && np >= 2 && (q_ch != p[1] || q_cw != p[2])) { q_ch = p[1]; q_cw = p[2]; winch = 1; }
+                i = j + 1; continue;
             }
             if (j >= ilen) { if (flush_esc) { i = ilen; } break; }    /* incomplete */
             uint8_t fin = ibuf[j]; int mod = np >= 1 ? p[1] : (c1 == 'O' && p[0] > 1 ? p[0] : 1);
@@ -140,6 +149,20 @@ static void parse_input(int flush_esc) {
 static void get_winsize(void) {
     struct winsize ws;
     if (!ioctl(1, TIOCGWINSZ, &ws) && ws.ws_row && ws.ws_col) { term_rows = ws.ws_row; term_cols = ws.ws_col; term_xpix = ws.ws_xpixel; term_ypix = ws.ws_ypixel; }
+    if ((!term_xpix || !term_ypix) && q_cw > 0 && q_ch > 0) { term_xpix = term_cols * q_cw; term_ypix = term_rows * q_ch; }
+}
+
+/* Ask the terminal for its cell size in pixels (XTWINOPS 16) and device attributes (DA1: "4" = sixel).
+ * DA1 is answered by every terminal, so its reply marks the end of the answers.  Waits at most 0.5 s. */
+static void term_query(void) {
+    write_all("\x1b[16t\x1b[c", 9);
+    double t = now();
+    while (!q_da && now() - t < 0.5) {
+        fd_set fs; FD_ZERO(&fs); FD_SET(0, &fs);
+        struct timeval tv = {0, 20000};
+        if (select(1, &fs, NULL, NULL, &tv) > 0) { ssize_t r = read(0, ibuf + ilen, sizeof ibuf - ilen); if (r > 0) ilen += r; }
+        if (ilen) parse_input(0);
+    }
 }
 
 static void pcm_sink(void *ud, const int16_t *f, int n) { audio_write((Audio *)ud, f, n); }
@@ -154,8 +177,9 @@ static void usage(void) {
         "                  default: \"pw-play -a --format s16 --rate 48000 --channels 2 --latency 60ms -\"\n"
         "  --mips N        emulated CPU speed in million instructions/s (default 25)\n"
         "  --exe FILE      run another (unpacked) ST3 executable instead of the built-in one\n"
-        "  --gfx MODE      text (default): characters and colors | pixel-exact VGA picture via terminal graphics:\n"
-        "                  iterm (iTerm2/hterm/WezTerm inline images) | kitty | sixel\n"
+        "  --gfx MODE      auto (default): sixel if the terminal supports it, else text\n"
+        "                  text: characters and colors | pixel-exact VGA picture via terminal graphics:\n"
+        "                  sixel | iterm (iTerm2/WezTerm inline images) | kitty\n"
         "  --fps N         picture updates per second in graphics modes (default 20)\n"
         "  --glyphs MODE   text mode glyphs: st3 (default) | blocks\n"
         "  --log FILE      write emulator debug log\n"
@@ -169,14 +193,14 @@ int main(int argc, char **argv) {
     static char root[4096], args[256];
     if (!getcwd(root, sizeof root)) strcpy(root, ".");
     const char *audio_cmd = "pw-play -a --format s16 --rate 48000 --channels 2 --latency 60ms -";
-    const char *exe = NULL, *logp = NULL; int glyph_mode = 0, nosound = 0, gfx_mode = GFX_TEXT; double gfx_fps = 20;
+    const char *exe = NULL, *logp = NULL; int glyph_mode = 0, nosound = 0, gfx_mode = -2; double gfx_fps = 20;
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--root") && i + 1 < argc) { if (!realpath(argv[++i], root)) { fprintf(stderr, "st3: bad --root\n"); return 1; } }
         else if (!strcmp(argv[i], "--no-sound")) nosound = 1;
         else if (!strcmp(argv[i], "--audio") && i + 1 < argc) audio_cmd = argv[++i];
         else if (!strcmp(argv[i], "--mips") && i + 1 < argc) cfg.mips = atof(argv[++i]);
         else if (!strcmp(argv[i], "--exe") && i + 1 < argc) exe = argv[++i];
-        else if (!strcmp(argv[i], "--gfx") && i + 1 < argc) { if ((gfx_mode = gfx_parse_mode(argv[++i])) < 0) { fprintf(stderr, "st3: --gfx text|iterm|kitty|sixel\n"); return 1; } }
+        else if (!strcmp(argv[i], "--gfx") && i + 1 < argc) { i++; if (!strcmp(argv[i], "auto")) gfx_mode = -2; else if ((gfx_mode = gfx_parse_mode(argv[i])) < 0) { fprintf(stderr, "st3: --gfx auto|text|iterm|kitty|sixel\n"); return 1; } }
         else if (!strcmp(argv[i], "--fps") && i + 1 < argc) { gfx_fps = atof(argv[++i]); if (gfx_fps < 1) gfx_fps = 1; }
         else if (!strcmp(argv[i], "--glyphs") && i + 1 < argc) { i++; glyph_mode = !strcmp(argv[i], "blocks"); }
         else if (!strcmp(argv[i], "--log") && i + 1 < argc) logp = argv[++i];
@@ -191,6 +215,8 @@ int main(int argc, char **argv) {
     if (lr) { fprintf(stderr, "st3: cannot load executable (%d)\n", lr); return 1; }
     if (!nosound && audio_open(&A, audio_cmd) == 0) { M.pcm_sink = pcm_sink; M.pcm_ud = &A; }
     if (term_setup()) return 1;
+    term_query();
+    if (gfx_mode == -2) gfx_mode = q_sixel ? GFX_SIXEL : GFX_TEXT;    /* auto: pixel-exact where the terminal can */
     render_init(&R);
     gfx_init(&G, gfx_mode);
 
@@ -217,7 +243,7 @@ int main(int argc, char **argv) {
         if (wall - vt > 0.25) { dropped_total += (wall - vt) - 0.05; t0 += (wall - vt) - 0.05; }   /* host too slow: drop time */
         if (shift_clear_at && now() > shift_clear_at && M.kq_head == M.kq_tail) { M.shift_flags = 0; shift_clear_at = 0; }
 
-        if (winch) { winch = 0; get_winsize(); R.force = 1; G.force = 1; write_all("\x1b[0m\x1b[2J", 8); }
+        if (winch) { winch = 0; if (gfx_mode == GFX_SIXEL) write_all("\x1b[16t", 5); get_winsize(); R.force = 1; G.force = 1; write_all("\x1b[0m\x1b[2J", 8); }
         if (gfx_mode != GFX_TEXT && M.font_uploads > 0) {
             /* pixel-exact picture (once ST3 has loaded its fonts; before that the text renderer shows DOS output) */
             if (wall - last_render >= 1.0 / gfx_fps && !M.fontmode) {

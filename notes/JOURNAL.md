@@ -139,3 +139,9 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   (assume 1:2 cells if unknown); PNG = indexed + Up filter + zlib(1), pre-scaled 2x nearest. Only changed frames sent.
   tests/gfxcheck.py decodes the last frame of each protocol from a pty capture: 0 mismatching pixels for all three.
   Rates: ~5 fps / 205 KiB/s (iterm) during ARMANI playback; realtime lock unaffected. tools/gfxprobe.sh = terminal probe for user.
+- [m4d] 2026-11-14 SIXEL BY DEFAULT. User's ChromeOS Terminal probe: sixel yes, iTerm2 no, kitty no. st3 now queries the
+  terminal at startup (CSI 16 t cell size, then DA1 as end marker, 0.5 s max; replies swallowed by parse_input, CSI 16 t re-sent
+  on SIGWINCH for zoom). --gfx auto (default) = sixel if DA1 lists 4, else text. TIOCGWINSZ pixels 0 -> cols*cw x rows*ch from
+  the reply; nothing known -> 640x480. Sixel now re-sends only changed cell-row bands (gaps <3 rows merged): composited result
+  identical to full frames (ST3_GFX_FULL=1) on ARMANI play/stop run; 73 vs 175 KiB/s. gfxcheck composites bands;
+  GFXCHECK_ANSWER fakes an hterm-like terminal (0 pixels, answers queries). Non-sixel DA1 -> text verified.

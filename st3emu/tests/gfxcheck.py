@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Run st3 --gfx MODE in a pty, capture the raw terminal stream, decode the LAST picture it sent and write it as PPM.
 Usage: python3 -I tests/gfxcheck.py MODE OUT.ppm SECS "t:keys;..." -- st3 args...   (pty is 100x60, 8x16 px cells)
-Decodes: iterm (OSC 1337 PNG), kitty (APC G chunks, PNG), sixel (DCS q).  Prints stream stats."""
+Decodes: iterm (OSC 1337 PNG), kitty (APC G chunks, PNG), sixel (DCS q).  Prints stream stats.
+GFXCHECK_ANSWER='\x1b[?62;4c' (the DA1 reply) makes the pty report 0 pixels and answer st3's queries."""
 import os, sys, pty, time, select, struct, fcntl, termios, codecs, base64, zlib, re
 
 mode, outp, secs = sys.argv[1], sys.argv[2], float(sys.argv[3])
@@ -14,7 +15,8 @@ ROWS, COLS = 60, 100
 pid, fd = pty.fork()
 if pid == 0:
     os.environ['TERM'] = 'xterm-256color'; os.execv(cmd[0], cmd)
-fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack('HHHH', ROWS, COLS, COLS * 8, ROWS * 16))
+ANSWER = os.environ.get('GFXCHECK_ANSWER')   # set: report 0 pixels and answer the cell-size / DA1 queries instead (like hterm)
+fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack('HHHH', ROWS, COLS, 0 if ANSWER else COLS * 8, 0 if ANSWER else ROWS * 16))
 os.kill(pid, 28)
 buf = bytearray(); t0 = time.time(); ti = 0
 while time.time() - t0 < secs:
@@ -26,6 +28,8 @@ while time.time() - t0 < secs:
         except OSError: break
         if not d: break
         buf += d
+        if ANSWER and b'\x1b[16t' in d: os.write(fd, b'\x1b[6;16;8t')
+        if ANSWER and b'\x1b[c' in d: os.write(fd, ANSWER.encode())
 try: os.write(fd, b'\x1d'); time.sleep(0.3)
 except OSError: pass
 try: os.kill(pid, 15)
@@ -63,28 +67,39 @@ elif mode == 'kitty':
     print('images', len(imgs), 'last args', starts[-1].decode() if starts else None)
     w, h, rgb = png_decode(base64.b64decode(imgs[-1]))
 else:
-    six = re.findall(rb'\x1bP0;1;0q(.*?)\x1b\\', bytes(buf), re.S)
-    print('images', len(six))
-    s = six[-1].decode('latin-1')
-    m = re.match(r'"1;1;(\d+);(\d+)', s); w, h = int(m.group(1)), int(m.group(2)); s = s[m.end():]
-    cols = {}; img = bytearray(w * h * 3); x = y = 0; c = (0, 0, 0); i = 0
-    while i < len(s):
-        ch = s[i]
-        if ch == '#':
-            m = re.match(r'#(\d+)(;2;(\d+);(\d+);(\d+))?', s[i:]); i += m.end()
-            if m.group(2): cols[int(m.group(1))] = tuple(round(int(m.group(k)) * 255 / 100) for k in (3, 4, 5))
-            c = cols[int(m.group(1))]; continue
-        if ch == '$': x = 0; i += 1; continue
-        if ch == '-': x = 0; y += 6; i += 1; continue
-        rep = 1
-        if ch == '!':
-            m = re.match(r'!(\d+)', s[i:]); rep = int(m.group(1)); i += m.end(); ch = s[i]
-        b = ord(ch) - 63
-        for _ in range(rep):
-            for k in range(6):
-                if b >> k & 1 and y + k < h and x < w: o = ((y + k) * w + x) * 3; img[o:o+3] = bytes(c)
-            x += 1
-        i += 1
-    rgb = img
+    # composite every sixel at its cursor position on a ROWS*16 x COLS*8 canvas (partial updates repaint bands)
+    CW, CH = 8, 16; W, H = COLS * CW, ROWS * CH
+    canvas = bytearray(W * H * 3)
+    six = re.findall(rb'\x1b\[(\d+);(\d+)H\x1bP0;1;0q(.*?)\x1b\\', bytes(buf), re.S)
+    print('images', len(six), 'bytes per image avg', sum(len(x[2]) for x in six) // max(1, len(six)))
+    minx = miny = 1 << 30; maxx = maxy = 0
+    for prow, pcol, data in six:
+        ox, oy = (int(pcol) - 1) * CW, (int(prow) - 1) * CH
+        s = data.decode('latin-1')
+        m = re.match(r'"1;1;(\d+);(\d+)', s); w, h = int(m.group(1)), int(m.group(2)); s = s[m.end():]
+        minx = min(minx, ox); miny = min(miny, oy); maxx = max(maxx, ox + w); maxy = max(maxy, oy + h)
+        cols = {}; x = y = 0; c = (0, 0, 0); i = 0
+        while i < len(s):
+            ch = s[i]
+            if ch == '#':
+                m = re.match(r'#(\d+)(;2;(\d+);(\d+);(\d+))?', s[i:]); i += m.end()
+                if m.group(2): cols[int(m.group(1))] = tuple(round(int(m.group(k)) * 255 / 100) for k in (3, 4, 5))
+                c = cols[int(m.group(1))]; continue
+            if ch == '$': x = 0; i += 1; continue
+            if ch == '-': x = 0; y += 6; i += 1; continue
+            rep = 1
+            if ch == '!':
+                m = re.match(r'!(\d+)', s[i:]); rep = int(m.group(1)); i += m.end(); ch = s[i]
+            b = ord(ch) - 63
+            if b:
+                for k in range(6):
+                    if b >> k & 1 and y + k < h:
+                        row = (oy + y + k) * W
+                        for xx in range(x, min(x + rep, w)): o = (row + ox + xx) * 3; canvas[o:o+3] = bytes(c)
+            x += rep
+            i += 1
+    w, h = maxx - minx, maxy - miny
+    rgb = bytearray()
+    for yy in range(miny, maxy): rgb += canvas[(yy * W + minx) * 3:(yy * W + maxx) * 3]
 open(outp, 'wb').write(b'P6\n%d %d\n255\n' % (w, h) + bytes(rgb))
 print(f'decoded {w}x{h} -> {outp}')

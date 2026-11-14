@@ -154,18 +154,45 @@ size_t gfx_frame(Gfx *g, const VgaFrame *f, int rows, int cols, int xpix, int yp
                   memcmp(f->pal, g->last.pal, 768) || memcmp(f->pix, g->last.pix, (size_t)f->w * f->h);
     if (!changed) return 0;
     if (g->force || rows != g->rows || cols != g->cols) puts_(g, "\x1b[0m\x1b[2J");
+    uint8_t palprev[768]; memcpy(palprev, g->last.pal, 768);
     g->force = 0; g->rows = rows; g->cols = cols;
     g->last.w = f->w; g->last.h = f->h;
     memcpy(g->last.pal, f->pal, 768); memcpy(g->last.pix, f->pix, (size_t)f->w * f->h);
     int bx, by, bw, bh;
     layout(rows, cols, cw, chh, &bx, &by, &bw, &bh);
     if (bw < 8 || bh < 4) return g->n;
-    putf(g, "\x1b[%d;%dH", by + 1, bx + 1);
+    int cleared = g->n > 0, palchg = memcmp(f->pal, palprev, 768) != 0;
     if (g->mode == GFX_SIXEL) {
-        /* sixel pixels are screen pixels: scale to the box (needs the cell size; else 2x horizontally, 2.4x vertically) */
-        int sw = cw > 0 ? bw * cw : f->w * 2, sh = chh > 0 ? bh * chh : f->h * 12 / 5;
-        sixel_encode(g, scale(g, f, sw, sh), sw, sh, f->pal);
+        /* sixel pixels are screen pixels: scale to the cell box.  Cell size unknown: native width, 4:3 (640x480). */
+        int known = cw > 0 && chh > 0;
+        int sw = known ? bw * cw : f->w, sh = known ? bh * chh : f->w * 3 / 4;
+        uint8_t *img = scale(g, f, sw, sh);
+        if (known && !cleared && !palchg && !getenv("ST3_GFX_FULL") && g->prev && g->pw == sw && g->ph == sh) {
+            /* re-send only the bands of cell rows that changed (cursor blink, VU meters, pattern rows);
+             * bands separated by fewer than 3 unchanged rows are sent as one */
+            int any = 0;
+            for (int r = 0; r < bh;) {
+                if (!memcmp(img + (size_t)r * chh * sw, g->prev + (size_t)r * chh * sw, (size_t)chh * sw)) { r++; continue; }
+                int r0 = r, r1 = r, gap = 0;
+                for (r++; r < bh && gap < 3; r++) {
+                    if (memcmp(img + (size_t)r * chh * sw, g->prev + (size_t)r * chh * sw, (size_t)chh * sw)) { r1 = r; gap = 0; } else gap++;
+                }
+                r = r1 + 1;
+                putf(g, "\x1b[%d;%dH", by + r0 + 1, bx + 1);
+                sixel_encode(g, img + (size_t)r0 * chh * sw, sw, (r1 - r0 + 1) * chh, f->pal);
+                any = 1;
+            }
+            if (!any) return g->n;
+            g->part_frames++;
+        } else {
+            g->full_frames++;
+            putf(g, "\x1b[%d;%dH", by + 1, bx + 1);
+            sixel_encode(g, img, sw, sh, f->pal);
+        }
+        if ((size_t)sw * sh > (size_t)g->pw * g->ph || !g->prev) g->prev = realloc(g->prev, (size_t)sw * sh);
+        memcpy(g->prev, img, (size_t)sw * sh); g->pw = sw; g->ph = sh;
     } else {
+        putf(g, "\x1b[%d;%dH", by + 1, bx + 1);
         /* the terminal scales the image into the cell box; pre-scale by 2 (nearest) so its smoothing stays crisp */
         int sw = f->w * 2, sh = f->h * 2;
         uint8_t *png; size_t pn = png_encode(g, scale(g, f, sw, sh), sw, sh, f->pal, &png);

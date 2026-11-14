@@ -8,6 +8,8 @@ typedef struct {
     VgaFrame last;               /* last frame sent (change detection) */
     char *out; size_t n, cap;    /* escape-sequence output of the last gfx_frame() */
     uint8_t *sbuf; size_t scap;  /* scaled image */
+    uint8_t *prev; int pw, ph;   /* sixel: last image on screen (only changed cell rows are re-sent) */
+    long full_frames, part_frames;
 } Gfx;
 int gfx_parse_mode(const char *s);   /* "iterm" | "kitty" | "sixel" | "text"; -1 if unknown */
 void gfx_init(Gfx *g, int mode);
