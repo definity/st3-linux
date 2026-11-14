@@ -70,6 +70,16 @@ static void write_all(const char *b, int n) {
     while (n > 0) { ssize_t w = write(1, b, n); if (w < 0) { if (errno == EINTR || errno == EAGAIN) continue; return; } b += w; n -= w; }
 }
 
+/* one screen update, wrapped in "synchronized output" (DEC private mode 2026: xterm.js / ChromeOS Terminal, kitty,
+ * WezTerm, foot, iTerm2, Windows Terminal, ...): the terminal holds its repaint until the whole update has arrived, so
+ * it never shows a half-drawn frame (seen as flickering lines while the window has focus).  Terminals without the
+ * mode ignore it. */
+static void write_frame(const char *b, int n) {
+    write_all("\x1b[?2026h", 8);
+    write_all(b, n);
+    write_all("\x1b[?2026l", 8);
+}
+
 /* ------------------------------------------------------------------ keyboard */
 static uint8_t ibuf[256]; static int ilen; static double esc_t, fn_prefix;
 static double shift_clear_at;
@@ -264,7 +274,7 @@ int main(int argc, char **argv) {
             if (wall - last_render >= 1.0 / gfx_fps && !M.fontmode) {
                 vgafb_render(&M, &VF, (unsigned)(machine_vtime(&M) * 70.086));
                 size_t n = gfx_frame(&G, &VF, term_rows, term_cols, term_xpix, term_ypix);
-                if (n) write_all(G.out, n);
+                if (n) write_frame(G.out, n);
                 last_render = wall;
             }
         } else if (wall - last_render >= 1.0 / 30 && !M.fontmode) {
@@ -276,7 +286,7 @@ int main(int argc, char **argv) {
             int rows = M.mem[0x484] + 1;
             int y0 = term_rows > rows ? (term_rows - rows) / 2 : 0, x0 = term_cols > 80 ? (term_cols - 80) / 2 : 0;
             int n = render_frame(&R, M.mem + 0xB8000, rows, M.dac, M.attr, M.seq[3], term_rows, term_cols, y0, x0);
-            if (n) write_all(R.out, n);
+            if (n) write_frame(R.out, n);
             if (term_rows < rows || term_cols < 80) {   /* too small: say so on the last line, every frame */
                 char txt[160], msg[220];
                 snprintf(txt, sizeof txt, " ST3 needs 80x%d (now %dx%d): enlarge window or zoom out (Ctrl -) ", rows, term_cols, term_rows);

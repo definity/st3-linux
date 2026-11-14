@@ -188,3 +188,10 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   all 16 notes at pitch; no EMS: notes 4..16 silent.  Both -20 cents = SB Pro stereo rate 21739 Hz vs ST3's 22000 Hz
   assumption (hardware-faithful).  Save via Ctrl-W -> all 16 samples byte-identical.  Realtime: 0 underruns,
   FreeEMS 16368K -> 15344K after load.
+- [m5b] 2026-11-14 FOCUS-ONLY GLITCH.  User: perfect while the window is unfocused; choppy with "lines" only when the
+  terminal has focus and the screen changes.  Research (libapps source): ChromeOS Terminal = xterm.js + ImageAddon by
+  default (hterm only with ?emulator=hterm; hterm has no sixel).  xterm.js decodes sixel synchronously into per-cell
+  canvas tiles (new image replaces old tiles cell by cell); it parses input in time slices and repaints in between,
+  far more often when focused -> half-applied multi-band frames become visible.  Fix: every frame wrapped in DEC
+  synchronized output (CSI ?2026h ... CSI ?2026l, main.c write_frame); xterm.js lists mode 2026 (hold of rendering not
+  confirmed from source).  Ignored by terminals without it.  Earlier notes saying "hterm" mean xterm.js.
