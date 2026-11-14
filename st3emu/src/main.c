@@ -185,6 +185,7 @@ static void usage(void) {
         "usage: st3 [options] [-- ST3-switches]\n"
         "  --root DIR      directory used as C:\\ST3 (songs, samples, ST3.SET); default: current directory\n"
         "  --no-sound      disable audio output\n"
+        "  --no-ems        no expanded memory (default: 16 MB LIM EMS 4.0, page frame D000)\n"
         "  --audio CMD     audio sink command reading s16le 48k stereo on stdin\n"
         "                  default: \"pw-play -a --format s16 --rate 48000 --channels 2 --latency 60ms -\"\n"
         "  --mips N        emulated CPU speed in million instructions/s (default 25)\n"
@@ -210,6 +211,7 @@ int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--root") && i + 1 < argc) { if (!realpath(argv[++i], root)) { fprintf(stderr, "st3: bad --root\n"); return 1; } }
         else if (!strcmp(argv[i], "--no-sound")) nosound = 1;
+        else if (!strcmp(argv[i], "--no-ems")) cfg.no_ems = 1;
         else if (!strcmp(argv[i], "--audio") && i + 1 < argc) audio_cmd = argv[++i];
         else if (!strcmp(argv[i], "--mips") && i + 1 < argc) cfg.mips = atof(argv[++i]);
         else if (!strcmp(argv[i], "--exe") && i + 1 < argc) exe = argv[++i];

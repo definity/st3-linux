@@ -19,7 +19,19 @@ typedef struct {
     const char *args;            /* DOS command tail */
     char env[512]; int envlen;   /* extra env strings, NUL separated */
     int verbose;
+    int no_ems;                  /* 1: no expanded memory */
 } MachineConfig;
+
+#define EMS_PAGES 1024           /* 16 MB of expanded memory */
+#define EMS_HANDLES 255
+#define EMS_FRAME_SEG 0xD000
+typedef struct {
+    uint8_t *store;              /* EMS_PAGES x 16 KB */
+    uint8_t owner[EMS_PAGES];    /* handle + 1, 0 = free */
+    int free_pages, phys[4];     /* global page mapped in each physical page, -1 none */
+    struct { int used, n, saved, ctx[4]; uint16_t *pages; char name[8]; } handle[EMS_HANDLES];
+    int unknown_reported;
+} Ems;
 
 typedef struct Machine {
     CPU cpu;
@@ -85,11 +97,13 @@ typedef struct Machine {
     uint16_t shift_flags;
 
     /* DOS */
-    FILE *handles[MAX_HANDLES]; int hkind[MAX_HANDLES];  /* 0 free, 1 file, 2 con */
+    FILE *handles[MAX_HANDLES]; int hkind[MAX_HANDLES];  /* 0 free, 1 file, 2 con, 3 EMMXXXX0 */
     char cwd[256];               /* relative to root, DOS style, no leading backslash */
     uint16_t dta_seg, dta_off;
     struct { int n, pos; char (*names)[300]; } finds[8]; int find_slot_next;
     int exit_code, exited;
+
+    Ems ems;                     /* ems.c */
 
     /* stats */
     uint64_t ints_seen[256];
@@ -99,6 +113,8 @@ typedef struct Machine {
 void machine_init(Machine *m, uint8_t *mem, const MachineConfig *cfg, FILE *log);
 int machine_load_exe(Machine *m, const char *path);
 int machine_load_exe_mem(Machine *m, const uint8_t *data, long size, const char *name);
+void ems_init(Machine *m);
+int ems_int67(Machine *m);
 /* run a slice of n instructions (handles HLE traps, IRQ delivery, timers). returns <0 on fatal error */
 int machine_run(Machine *m, uint64_t n);
 double machine_vtime(Machine *m);

@@ -303,7 +303,11 @@ int dos_service(Machine *m, uint16_t *fl) {
         set16(m, R_EAX, h); OK(); }
     case 0x3D: {
         asciiz(m, DS, DX, path, sizeof path);
-        if (!strcasecmp(path, "EMMXXXX0") || strstr(path, "EMMXXXX0")) { LOGF(m, "OPEN %s (EMS probe) -> not found\n", path); ERR(2); }
+        if (!strcasecmp(path, "EMMXXXX0") || strstr(path, "EMMXXXX0")) {          /* the EMS driver's device */
+            if (!m->ems.store) { LOGF(m, "OPEN %s (EMS probe) -> not found\n", path); ERR(2); }
+            int h = newhandle(m); if (h < 0) ERR(4);
+            m->hkind[h] = 3; LOGF(m, "OPEN %s (EMS probe) -> %d\n", path, h);
+            set16(m, R_EAX, h); OK(); }
         host_path(m, path, hp, sizeof hp);
         struct stat st; if (stat(hp, &st) || S_ISDIR(st.st_mode)) { LOGF(m, "OPEN '%s' -> not found\n", path); ERR(2); }
         int h = newhandle(m); if (h < 0) ERR(4);
@@ -319,7 +323,7 @@ int dos_service(Machine *m, uint16_t *fl) {
         OK();
     case 0x3F: {
         if (BX >= MAX_HANDLES || !m->hkind[BX]) ERR(6);
-        if (m->hkind[BX] == 2) { set16(m, R_EAX, 0); OK(); }
+        if (m->hkind[BX] >= 2) { set16(m, R_EAX, 0); OK(); }
         uint8_t *buf = malloc(CX ? CX : 1);
         size_t n = fread(buf, 1, CX, m->handles[BX]);
         for (size_t i = 0; i < n; i++) wb(m, ((uint32_t)DS << 4) + (uint16_t)(DX + i), buf[i]);
@@ -329,6 +333,7 @@ int dos_service(Machine *m, uint16_t *fl) {
         uint8_t *buf = malloc(CX ? CX : 1);
         for (int i = 0; i < CX; i++) buf[i] = rb(m, ((uint32_t)DS << 4) + (uint16_t)(DX + i));
         if (m->hkind[BX] == 2) { con_write(m, buf, CX); free(buf); set16(m, R_EAX, CX); OK(); }
+        if (m->hkind[BX] == 3) { free(buf); set16(m, R_EAX, CX); OK(); }
         if (CX == 0) { fflush(m->handles[BX]); if (ftruncate(fileno(m->handles[BX]), ftell(m->handles[BX]))) {} free(buf); set16(m, R_EAX, 0); OK(); }
         size_t n = fwrite(buf, 1, CX, m->handles[BX]); free(buf); set16(m, R_EAX, n); OK(); }
     case 0x41: asciiz(m, DS, DX, path, sizeof path); host_path(m, path, hp, sizeof hp);
@@ -347,7 +352,7 @@ int dos_service(Machine *m, uint16_t *fl) {
     case 0x44:
         switch (AL) {
         case 0x00: if (BX >= MAX_HANDLES || !m->hkind[BX]) ERR(6);
-            set16(m, R_EDX, m->hkind[BX] == 2 ? 0x80D3 : 0x0002); OK();
+            set16(m, R_EDX, m->hkind[BX] == 2 ? 0x80D3 : m->hkind[BX] == 3 ? 0xC080 : 0x0002); OK();
         case 0x01: OK();
         case 0x06: case 0x07: setAL(m, 0xFF); OK();
         case 0x08: set16(m, R_EAX, 1); OK();

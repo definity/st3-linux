@@ -170,7 +170,7 @@ int bios_service(Machine *m, int vec, uint16_t *fl) {
     case 0x00:
         LOGF(m, "Divide overflow (INT 0 default handler) -> exit\n");
         m->exited = 1; m->exit_code = 0xFF; return 1;
-    case 0x67: set16(m, R_EAX, 0x8400); return 1;   /* EMS: "software malfunction" if anyone calls */
+    case 0x67: return ems_int67(m);
     }
     return 0;
 }

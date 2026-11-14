@@ -35,6 +35,7 @@ int main(int argc, char **argv) {
     MachineConfig cfg = {0};
     cfg.mips = getenv("MIPS") ? atof(getenv("MIPS")) : 25.0;
     cfg.root = argv[1];
+    cfg.no_ems = getenv("NOEMS") != NULL;
     static char args[256] = "";
     for (int i = 6; i < argc; i++) { strcat(args, i > 6 ? " " : ""); strncat(args, argv[i], 200); }
     cfg.args = args;

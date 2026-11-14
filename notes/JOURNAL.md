@@ -176,3 +176,15 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   ending at the picture bottom may round into the empty row below (layout shrinks by 1 row if that row would be the
   terminal's last line).  gfxcheck GFXCHECK_HTERM=1 implements the model: old builds 8-34 wrong pixel rows vs their own
   full-frame pictures (8x16, 8x17), new build 0.
+- [m5] 2026-11-14 EMS (user request; the YouTube recording shows FreeEMS 15152K).  ST3 3.21 (disasm): fopen("EMMXXXX0")
+  (seg 195A2) -> int86 67h/41h frame (needs >= 1000h) -> 43h 1 page = context handle (47h/48h save/restore at 2A480/
+  2A49E) -> 42h polled constantly for FreeEMS -> per sample: 43h up to 4 pages; player (2A446) treats sample segment
+  >= F000h as EMS handle (seg & FFF), maps logical 0..3 into physical 0..3 with 44h.  Samples only go to EMS when
+  conventional memory runs short (ARMANI: none).
+  src/ems.c: LIM 4.0, 1024 pages (16 MB, calloc), frame D000h, copy-on-map (write back replaced page), fns 40-51,53,
+  58,59,5A; INT 67h vector EFFE:0087 (= trap F000:0067) with "EMMXXXX0" at EFFE:000A; DOS open of EMMXXXX0 = char
+  device handle kind 3 (IOCTL 00 -> C080).  --no-ems / headless NOEMS=1 disables.
+  Test: tools/mkbigsong.py -> BIGTEST.S3M (16 looped sines 220 Hz * 2^(k/12), 64000 B each, 1 MB).  EMS: 17 allocs,
+  all 16 notes at pitch; no EMS: notes 4..16 silent.  Both -20 cents = SB Pro stereo rate 21739 Hz vs ST3's 22000 Hz
+  assumption (hardware-faithful).  Save via Ctrl-W -> all 16 samples byte-identical.  Realtime: 0 underruns,
+  FreeEMS 16368K -> 15344K after load.

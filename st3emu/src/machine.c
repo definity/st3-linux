@@ -20,6 +20,7 @@ void machine_init(Machine *m, uint8_t *mem, const MachineConfig *cfg, FILE *log)
     vga_init(m);
     opl_reset(&m->opl);
     bios_init(m);
+    ems_init(m);
     dos_init(m);
 }
 

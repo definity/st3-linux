@@ -6,7 +6,7 @@ What this is
   program (unpacked from its Future Crew protection + PKLITE layers) and runs it on a built-in
   emulated PC: 386 real-mode CPU, VGA text mode (80x50, ST3's custom fonts), Sound Blaster Pro with its
   OPL2 FM chip (AdLib instruments),
-  BIOS and DOS. ST3's screen is drawn in your terminal with 24-bit color; sound goes to PipeWire.
+  16 MB of LIM 4.0 expanded memory (EMS, for big songs), BIOS and DOS. ST3's screen is drawn in your terminal with 24-bit color; sound goes to PipeWire.
 
 Run it
   cd into this folder (it is ST3's "C:\ST3" drive) and run:   ./st3
@@ -34,6 +34,7 @@ Chromebook notes
 
 Options
   --root DIR      use DIR as C:\ST3 instead of the current directory
+  --no-ems        no expanded memory (ST3 then holds samples only in its ~200K of conventional memory)
   --no-sound      no audio          --audio CMD   custom audio sink (s16le, 48 kHz, stereo on stdin)
   --mips N        emulated CPU speed (default 25 million instructions/s)
   --gfx MODE      auto   (default) pixel-exact picture if the terminal can show sixel graphics, else text
