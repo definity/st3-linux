@@ -5,7 +5,7 @@ libst3cpu.so: src/cpu.c src/cpu.h tests/cpu_api.c
 clean:
 	rm -f libst3cpu.so st3 st3head opl_test
 
-CORE = src/cpu.c src/machine.c src/io.c src/vga.c src/bios.c src/dos.c src/keys.c src/opl.c src/mixer.c src/vgafb.c src/st3patch.c
+CORE = src/cpu.c src/machine.c src/io.c src/vga.c src/bios.c src/dos.c src/keys.c src/opl.c src/mixer.c src/vgafb.c
 st3head: $(CORE) src/*.h tests/headless.c
 	$(CC) $(CFLAGS) -o $@ $(CORE) tests/headless.c -lm
 

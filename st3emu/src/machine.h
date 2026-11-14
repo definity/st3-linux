@@ -99,7 +99,6 @@ typedef struct Machine {
 void machine_init(Machine *m, uint8_t *mem, const MachineConfig *cfg, FILE *log);
 int machine_load_exe(Machine *m, const char *path);
 int machine_load_exe_mem(Machine *m, const uint8_t *data, long size, const char *name);
-int st3_patch_help(Machine *m);   /* st3patch.c: Ctrl-F line in ST3's global-keys quickhelp; 0 = applied */
 /* run a slice of n instructions (handles HLE traps, IRQ delivery, timers). returns <0 on fatal error */
 int machine_run(Machine *m, uint64_t n);
 double machine_vtime(Machine *m);

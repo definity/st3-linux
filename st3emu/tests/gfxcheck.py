@@ -2,6 +2,7 @@
 """Run st3 --gfx MODE in a pty, capture the raw terminal stream, decode the LAST picture it sent and write it as PPM.
 Usage: python3 -I tests/gfxcheck.py MODE OUT.ppm SECS "t:keys;..." -- st3 args...   (pty is 100x60, 8x16 px cells)
 Decodes: iterm (OSC 1337 PNG), kitty (APC G chunks, PNG), sixel (DCS q).  Prints stream stats.
+GFXCHECK_HTERM=1 models a terminal that blanks whole cells under each new image.
 GFXCHECK_ANSWER='\x1b[?62;4c' (the DA1 reply) makes the pty report 0 pixels and answer st3's queries."""
 import os, sys, pty, time, select, struct, fcntl, termios, codecs, base64, zlib, re
 
@@ -79,6 +80,12 @@ else:
         s = data.decode('latin-1')
         m = re.match(r'"1;1;(\d+);(\d+)', s); w, h = int(m.group(1)), int(m.group(2)); s = s[m.end():]
         bad6 += h % 6 != 0
+        if os.environ.get('GFXCHECK_HTERM'):   # model: an image replaces every cell it touches (height in 6-px bands)
+            h6 = (h + 5) // 6 * 6
+            for cy in range(oy // CH, (oy + h6 - 1) // CH + 1):
+                for yy in range(cy * CH, min(H, (cy + 1) * CH)):
+                    x0, x1 = ox // CW * CW, min(W, ((ox + w - 1) // CW + 1) * CW)
+                    canvas[(yy * W + x0) * 3:(yy * W + x1) * 3] = bytes(3 * (x1 - x0))
         minx = min(minx, ox); miny = min(miny, oy); maxx = max(maxx, ox + w); maxy = max(maxy, oy + h)
         cols = {}; x = y = 0; c = (0, 0, 0); i = 0
         while i < len(s):

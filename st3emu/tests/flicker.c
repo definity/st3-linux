@@ -22,7 +22,6 @@ int main(int argc, char **argv) {
     MachineConfig cfg = {0}; cfg.mips = 25.0; cfg.root = argv[1]; cfg.args = "";
     machine_init(&M, MEM, &cfg, NULL);
     if (machine_load_exe(&M, argv[2])) return 1;
-    st3_patch_help(&M);
     KeyScript ks; keyscript_parse(&ks, argv[3]);
     run_for(2.0);
     for (int i = 0; i < ks.n; i++) { if (ks.tok[i].wait_ms) run_for(ks.tok[i].wait_ms / 1000.0); else { machine_key(&M, ks.tok[i].key); run_for(0.3); } }

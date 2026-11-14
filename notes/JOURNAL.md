@@ -168,3 +168,11 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   sixel bands of cell-row height not a multiple of 6 leave a partial last band some terminals paint black.  Picture height
   now floor6(box), every band padded to a multiple of 6 with real rows (bottom edge: start earlier).  gfxcheck counts
   non-multiple-of-6 sixels (0) and GFXCHECK_CELL tests 8x16/8x17/9x18; composites identical to full frames.
+- [m4f] 2026-11-14 USER FEEDBACK: help line unwanted -> st3patch.c removed entirely (README documents Ctrl-F instead).
+  6-row padding made lines WORSE ("hard horizontal lines, redrawn only when something else in that row redraws").
+  Model: hterm keeps images per cell; a new image replaces the picture of every cell it touches (height rounded to
+  6 px bands), blanking the untouched part of a partly covered cell row.  Both earlier schemes spill into the next row.
+  Fix: every sixel covers whole cell rows and is a multiple of 6 px: groups of grp = 6/gcd(chh,6) rows; only an image
+  ending at the picture bottom may round into the empty row below (layout shrinks by 1 row if that row would be the
+  terminal's last line).  gfxcheck GFXCHECK_HTERM=1 implements the model: old builds 8-34 wrong pixel rows vs their own
+  full-frame pictures (8x16, 8x17), new build 0.

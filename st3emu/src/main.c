@@ -226,7 +226,6 @@ int main(int argc, char **argv) {
     machine_init(&M, MEM, &cfg, log);
     int lr = exe ? machine_load_exe(&M, exe) : machine_load_exe_mem(&M, st3_exe, st3_exe_len, "ST3.EXE");
     if (lr) { fprintf(stderr, "st3: cannot load executable (%d)\n", lr); return 1; }
-    st3_patch_help(&M);   /* Ctrl-F line in the global-keys quickhelp (no-op for other executables) */
     if (!nosound && audio_open(&A, audio_cmd) == 0) { M.pcm_sink = pcm_sink; M.pcm_ud = &A; }
     if (term_setup()) return 1;
     term_query();
