@@ -195,3 +195,8 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   far more often when focused -> half-applied multi-band frames become visible.  Fix: every frame wrapped in DEC
   synchronized output (CSI ?2026h ... CSI ?2026l, main.c write_frame); xterm.js lists mode 2026 (hold of rendering not
   confirmed from source).  Ignored by terminals without it.  Earlier notes saying "hterm" mean xterm.js.
+- [m5c] 2026-11-14 xterm check (user installed xterm): xterm -ti vt340 (sixel) driven by tests/ptydrive.py (pty
+  mirror + key timeline, writes $WINDOWID), screenshots with ImageMagick import: clean frames through ARMANI playback
+  with Track-5 view.  EMS with user's collection (music_collection/, git-ignored: third-party songs): BABY.S3M 1.2 MB:
+  no EMS -> load fails (FreeMem 043K red, stays on "Retrieve Module", silence); EMS -> 32 sample handles, plays,
+  FreeEMS 15024K.  A-PAUL.S3M 1.1 MB: no EMS RMS 2411 (samples missing) vs EMS 5484, 26 handles.
