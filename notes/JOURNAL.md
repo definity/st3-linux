@@ -211,3 +211,30 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   past loop end) runs on instrument 21 (looped) through 0000:0000, overwrites the IVT and ST3's code at load+78h ->
   far call into garbage.  An ST3 bug with a broken file; real hardware would crash too.  Found with a new jump-history
   ring in the CPU (last 256 non-sequential transfers, dumped to the log on a CPU error; ~3% slower).
+- [w1] 2026-11-14 WEBASSEMBLY (branch web).  Emscripten 7.0.0 via emsdk (outside the repo).  web/: st3web.c (C API over
+  the unchanged core: st3_init/frame/render/key/shift/audio_take), st3-worker.js (emulator on a Web Worker, C:\ST3 =
+  IDBFS seeded from preloaded dist/s, dist/i, ST3.SET, ########.ST3; saves every 5 s), audio-worklet.js (48 kHz
+  player fed directly by the worker over a MessagePort; reports queue depth = pacing clock, target 0.1 s; underrun
+  hold+decay), st3.js (KeyboardEvent -> BIOS codes incl. Ctrl/Alt/F-key/keypad tables, live shift flags from real
+  key up/down, Ctrl-F prefix, canvas at 4:3 via integer nearest upscale + smooth downscale, upload/download,
+  fullscreen + keyboard.lock, beforeunload guard because Chrome owns Ctrl-W = ST3 Save As).  Output 371 KB wasm +
+  3.1 MB data.  First version ran everything on the main thread; moved to a worker so drawing/saving can't starve
+  audio.  web/webdrive.mjs = headless Chrome via DevTools protocol (real key events, screenshots, stats, reload).
+  Lesson: killing only Chrome's parent leaked renderer processes that piled up and starved later runs (load 4.4,
+  multi-second stalls, misleading underruns) -> webdrive kills the process group.  Results (headless, software
+  rendering in the Crostini container): ARMANI loads via Ctrl-L/Alt-G, plays with Track-5, 0 underruns over 15-30 s,
+  emulator uses 36-39% of one core, worst worker gap ~30 ms; Ctrl-F,3 = F3; uploaded song persists across reload.
+- [w2] 2026-11-14 night, web branch.  wasmcheck.sh: headless driver built natively and with emcc (NODERAWFS, node):
+  wav/ppm/log byte-identical for ARMANI, TECHNOLO, 2ND_PM, FMTEST (FM), BABY (33 EMS handles); wasm ~72 MIPS vs
+  25 needed.  keytest.json: 114 combos (letters, Ctrl/Alt, digits, punctuation, F1-F12 x4 mods, nav x ctrl/alt,
+  keypad, Ctrl-F prefix) = IBM BIOS INT16/00 codes, in Chrome and Chromium 156.  10-min soak (ARMANI looping, Track-5):
+  0 underruns, lag constant 0.13-0.15 s (no drift), wasm heap fixed 64 MB, busy 0.35 core; page JS heap is a GC
+  sawtooth (12-313 MB) not a leak; frames now 8-bit+palette in recycled buffers (497 frames, 3 allocations).
+  Earlier soak attempts hung: host memory/IO pressure (load 11-16) partly from 1.9 GB of my sweep WAVs + stale
+  Chrome profiles in tmpfs /tmp -> deleted; webdrive now removes its profile, times out every CDP call (30 s),
+  logs incrementally.  Offline: service worker (network first) + manifest + icons; reload with network cut works.
+  Uploads get 8.3 names.  Layout fits under a wrapped top bar (800x600).  .github/workflows/pages.yml rehearsed from
+  a fresh clone (wasmcheck + build OK).
+  DOS layer: Win95-style aliases for host names DOS can't hold (dir_aliases: sorted long names take first free
+  STEM~N; find_first lists them, host_path resolves them).  "Armani Showers (Edge, 1994).s3m" = ARMANI~1.S3M,
+  loads and plays.  Old (main) vs new st3head byte-identical for 8.3-only directories.

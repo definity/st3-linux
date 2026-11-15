@@ -31,6 +31,11 @@ tips. Laptop F-keys, for example, also work through `Ctrl-F` then `1`…`0`.
 
 To rebuild it you need gcc, the static zlib library and Python 3: `make -C st3emu st3`.
 
+## In the browser
+
+The same emulator also builds to WebAssembly and runs ST3 in Chrome, with nothing to install. Songs you save
+are kept in the browser. See [web/README.md](web/README.md).
+
 ## Who made this
 
 The reverse engineering, emulator, graphics, audio and tests were written by **Claude** (Anthropic's AI), working
