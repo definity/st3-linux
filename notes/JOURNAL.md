@@ -238,3 +238,22 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
   DOS layer: Win95-style aliases for host names DOS can't hold (dir_aliases: sorted long names take first free
   STEM~N; find_first lists them, host_path resolves them).  "Armani Showers (Edge, 1994).s3m" = ARMANI~1.S3M,
   loads and plays.  Old (main) vs new st3head byte-identical for 8.3-only directories.
+- [w3] 2026-11-15, published.  Public repo github.com/definity/st3-linux (gh account definity); README credits
+  Claude for the work and "the project owner" for direction (no personal name in files, by request).  Browser
+  version: Back up (stored .zip of all of C:\ST3) / Restore (stored+deflate zips, also a zip of an ST3 folder,
+  case-insensitive merge, keeps other files; dropping a .zip restores), navigator.storage.persist() with a note in
+  the Download files box.  web merged into main; Pages enabled via API (build_type=workflow); live at
+  https://definity.github.io/st3-linux/.  First CI run failed wasmcheck: native wav off by 1 LSB at a few DAC
+  samples — GitHub's Ubuntu 26 gcc emits FMA by default (reproduced locally with -mfma, md5 matched CI exactly).
+  Fix: -ffp-contract=off in st3emu/Makefile (override CFLAGS), web/Makefile and wasmcheck.sh.  CI now green
+  (build+deploy ~1.5 min); failed checks upload their outputs as artifact wasmcheck-outputs.
+
+## Status and how to resume (2026-11-15)
+- Done: Linux ELF (Route A) and browser version, both public.  Route B (native rewrite) shelved by the user.
+- Pushing to main redeploys the site; run web/wasmcheck.sh first (needs emsdk 7.0.0, kept outside the repo at
+  ../emsdk: `source ../emsdk/emsdk_env.sh`).  Local web test: `make -C web serve` (port 8321), headless tests:
+  `node web/webdrive.mjs URL OUTPREFIX "STEPS"` and `keytest:web/keytest.json`.  Song sweep: tools/sweep.sh.
+- Known: ChromeOS terminal focus flicker in sixel mode (accepted; --gfx text avoids it).  DFM001.S3M is a
+  truncated file that crashes ST3 itself.  dist/st3 (untracked binary) predates the ~N alias change; rebuild with
+  `make -C st3emu st3` and copy if wanted.
+- Outside the repo: ../work-before-rewrite.bundle (pre-rewrite backup with old identities; delete only if asked).
