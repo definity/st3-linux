@@ -39,7 +39,7 @@ are kept in the browser. See [web/README.md](web/README.md).
 ## Who made this
 
 The reverse engineering, emulator, graphics, audio and tests were written by **Claude** (Anthropic's AI), working
-in Claude Code. Chad provided the direction, guidance and testing on real hardware, and the stubbornness to
+in Claude Code. The project owner provided the direction, guidance and testing on real hardware, and the stubbornness to
 insist on being faithful to the original.
 
 The journey, including every dead end, is written down in [notes/JOURNAL.md](notes/JOURNAL.md).
