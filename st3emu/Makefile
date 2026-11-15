@@ -1,5 +1,8 @@
 CC ?= gcc
 CFLAGS ?= -O2 -g -Wall -Wextra -Wno-unused-parameter -Wno-misleading-indentation
+# Same float rounding on every compiler and CPU (no fused multiply-add), so audio is identical everywhere,
+# including the WebAssembly build; some compilers (e.g. on Ubuntu 26) fuse by default.
+override CFLAGS += -ffp-contract=off
 libst3cpu.so: src/cpu.c src/cpu.h tests/cpu_api.c
 	$(CC) $(CFLAGS) -fPIC -shared -o $@ src/cpu.c tests/cpu_api.c
 clean:

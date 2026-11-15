@@ -10,7 +10,7 @@ NODE=$(command -v node || true)
 [ -z "$NODE" ] && { echo "wasmcheck: node not found"; exit 2; }
 make -s -C "$W/st3emu" st3head || exit 2
 SRC="cpu.c machine.c io.c vga.c bios.c dos.c keys.c opl.c mixer.c vgafb.c ems.c"
-emcc -O3 -w -sNODERAWFS=1 -sENVIRONMENT=node -sINITIAL_MEMORY=64MB -sALLOW_MEMORY_GROWTH=1 -o "$OUT/st3head.js" \
+emcc -O3 -ffp-contract=off -w -sNODERAWFS=1 -sENVIRONMENT=node -sINITIAL_MEMORY=64MB -sALLOW_MEMORY_GROWTH=1 -o "$OUT/st3head.js" \
     $(for f in $SRC; do echo "$W/st3emu/src/$f"; done) "$W/st3emu/tests/headless.c" -lm || exit 2
 
 KEYS="{W2500}{SPACE}{W500}{CTRL-l}{W1500}{DOWN}{W500}{ENTER}{W800}y{W9000}{F5}{W1500}{PGDN}{W10000}"
