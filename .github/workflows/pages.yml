@@ -34,7 +34,15 @@ jobs:
       - name: Check the WebAssembly core matches the native build byte for byte
         run: |
           source "$RUNNER_TEMP/emsdk/emsdk_env.sh"
-          web/wasmcheck.sh
+          TMPDIR="$RUNNER_TEMP" web/wasmcheck.sh
+
+      - name: Keep the check's outputs if it failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wasmcheck-outputs
+          path: ${{ runner.temp }}/wasmcheck-*
+          retention-days: 7
 
       - name: Build the browser version
         run: |
