@@ -256,4 +256,3 @@ progressive HLE until program idles at keyboard ; 2c write notes/HWMAP.md (ports
 - Known: ChromeOS terminal focus flicker in sixel mode (accepted; --gfx text avoids it).  DFM001.S3M is a
   truncated file that crashes ST3 itself.  dist/st3 (untracked binary) predates the ~N alias change; rebuild with
   `make -C st3emu st3` and copy if wanted.
-- Outside the repo: ../work-before-rewrite.bundle (pre-rewrite backup with old identities; delete only if asked).
