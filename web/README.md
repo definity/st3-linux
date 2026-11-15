@@ -31,6 +31,9 @@ the clock: the worker keeps about 0.1 s queued in the player.
 
 - **Files:** ST3's `C:\ST3` drive is stored in the browser (IndexedDB), seeded with the bundled songs and
   instruments. Songs you save survive reloads. *Add songs* puts files in `C:\ST3\S`, and *Download files* gets them out.
+  *Back up* downloads the whole drive as one `.zip`; *Restore* (or dropping a `.zip` on the page) puts a backup's
+  files back, replacing files of the same name and leaving the rest. The page asks the browser to keep its storage
+  permanently; Chrome decides by itself (an installed app gets it), and *Download files* says which applies.
 - **Keys:** F-keys work normally. `Ctrl-F` then `1`…`0` gives F1…F10 for keyboards whose top row does other
   things (Chromebooks). Chrome keeps Ctrl-W, Ctrl-T and Ctrl-N for itself, except in **Full screen**, where the page
   asks for keyboard lock. Because ST3 uses Ctrl-W for "Save As", the page asks before it is closed.

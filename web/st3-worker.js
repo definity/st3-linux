@@ -101,6 +101,76 @@ function listFiles(dir, out) {
   return out;
 }
 
+// ---------------------------------------------------------------- backup and restore: the whole of C:\ST3 as a .zip
+const CRC = new Uint32Array(256).map((_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+function crc32(d) { let c = ~0; for (let i = 0; i < d.length; i++) c = CRC[(c ^ d[i]) & 255] ^ (c >>> 8); return ~c >>> 0; }
+
+// Stored (uncompressed) entries: any unzip tool reads them, and songs barely compress anyway.
+function makeZip() {
+  const enc = new TextEncoder(), parts = [], central = [];
+  let off = 0;
+  for (const p of listFiles(ROOT, []).sort()) {
+    const name = enc.encode(p.slice(ROOT.length + 1)), data = FS.readFile(p), crc = crc32(data);
+    const t = new Date(FS.stat(p).mtime);
+    const time = t.getHours() << 11 | t.getMinutes() << 5 | t.getSeconds() >> 1;
+    const date = Math.max(0, t.getFullYear() - 1980) << 9 | (t.getMonth() + 1) << 5 | t.getDate();
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true);
+    lh.setUint16(10, time, true); lh.setUint16(12, date, true); lh.setUint32(14, crc, true);
+    lh.setUint32(18, data.length, true); lh.setUint32(22, data.length, true); lh.setUint16(26, name.length, true);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true);
+    ch.setUint16(12, time, true); ch.setUint16(14, date, true); ch.setUint32(16, crc, true);
+    ch.setUint32(20, data.length, true); ch.setUint32(24, data.length, true); ch.setUint16(28, name.length, true);
+    ch.setUint32(42, off, true);
+    parts.push(lh.buffer, name, data); central.push(ch.buffer, name);
+    off += 30 + name.length + data.length;
+  }
+  const csize = central.reduce((s, b) => s + b.byteLength, 0), n = central.length / 2;
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, n, true); end.setUint16(10, n, true);
+  end.setUint32(12, csize, true); end.setUint32(16, off, true);
+  return { blob: new Blob([...parts, ...central, end.buffer], { type: 'application/zip' }), count: n };
+}
+
+// Reads stored and deflated entries (so a zip made by any tool works). Files from the zip replace files of the same
+// name; everything else on the drive stays. A zip of the ST3 folder itself (ST3/S/..., ST3/ST3.SET) also works.
+async function restoreZip(buf) {
+  const u8 = new Uint8Array(buf), dv = new DataView(buf), dec = new TextDecoder();
+  let e = u8.length - 22;
+  while (e >= 0 && dv.getUint32(e, true) !== 0x06054b50) e--;
+  if (e < 0) throw new Error('not a .zip file');
+  const entries = [];
+  for (let i = 0, p = dv.getUint32(e + 16, true), n = dv.getUint16(e + 10, true); i < n; i++) {
+    if (dv.getUint32(p, true) !== 0x02014b50) throw new Error('damaged .zip file');
+    const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true);
+    const nlen = dv.getUint16(p + 28, true), xlen = dv.getUint16(p + 30, true), clen = dv.getUint16(p + 32, true);
+    const lho = dv.getUint32(p + 42, true);
+    const name = dec.decode(u8.subarray(p + 46, p + 46 + nlen));
+    const parts = name.split(/[\\/]/).filter((s) => s && s !== '.' && s !== '..');
+    p += 46 + nlen + xlen + clen;
+    if (!parts.length || /[\\/]$/.test(name)) continue;   // folder entry
+    const start = lho + 30 + dv.getUint16(lho + 26, true) + dv.getUint16(lho + 28, true);
+    entries.push({ parts, method, raw: u8.subarray(start, start + csize) });
+  }
+  // a zip of the folder itself: drop the one top-level folder all entries share
+  const top = entries.length && entries.every((x) => x.parts.length > 1 && x.parts[0] === entries[0].parts[0]) ? 1 : 0;
+  let count = 0, skipped = 0;
+  for (const x of entries) {
+    let data;
+    if (x.method === 0) data = x.raw;
+    else if (x.method === 8) data = new Uint8Array(await new Response(new Blob([x.raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+    else { skipped++; continue; }
+    // DOS names ignore case: S\ARMANI.S3M in the zip is the drive's s\ARMANI.S3M, not a second folder or file
+    const same = (dir, n) => FS.readdir(dir).find((h) => h.toUpperCase() === n.toUpperCase()) || n;
+    let dir = ROOT;
+    for (const d of x.parts.slice(top, -1)) { dir += '/' + same(dir, d); if (!FS.analyzePath(dir).exists) FS.mkdir(dir); }
+    FS.writeFile(dir + '/' + same(dir, x.parts[x.parts.length - 1]), data);
+    count++;
+  }
+  return { count, skipped };
+}
+
 onmessage = (e) => {
   const m = e.data;
   if (m.type === 'key') { if (running) Module._st3_key(m.k); }
@@ -121,6 +191,14 @@ onmessage = (e) => {
   } else if (m.type === 'get') {
     const data = FS.readFile(m.path);
     postMessage({ type: 'file', path: m.path, data }, [data.buffer]);
+  } else if (m.type === 'backup') {
+    const { blob, count } = makeZip();
+    postMessage({ type: 'backup', blob, count });
+  } else if (m.type === 'restore') {
+    restoreZip(m.data).then(({ count, skipped }) => {
+      save();
+      postMessage({ type: 'status', text: 'Restored ' + count + ' file' + (count === 1 ? '' : 's') + ' to C:\\ST3' + (skipped ? ' (' + skipped + ' skipped: unsupported compression)' : '') });
+    }, (err) => postMessage({ type: 'status', text: 'Could not restore ' + m.name + ': ' + err.message }));
   } else if (m.type === 'stats') {
     postMessage({ type: 'stats', stats: { ...stats, busy: stats.emuTotal / (performance.now() - stats.since), vtime: running ? Module._st3_vtime() : 0, wall: performance.now() / 1000, mem: Module.HEAPU8.length, queued: queuedSeconds(), underruns, level } });
   } else if (m.type === 'resetstats') {

@@ -126,6 +126,7 @@ function onKeyUp(e) {
 let actx = null, node = null;
 async function startAudio() {
   if (actx) { if (actx.state === 'suspended') actx.resume(); return; }
+  keepStorage();
   try {
     actx = new AudioContext({ sampleRate: 48000, latencyHint: 'interactive' });
     await actx.audioWorklet.addModule('audio-worklet.js');
@@ -180,7 +181,25 @@ function paint() {
 
 // ---------------------------------------------------------------- files (C:\ST3 lives in the worker's IndexedDB store)
 function upload(files) {
-  for (const f of files) f.arrayBuffer().then((data) => toWorker({ type: 'upload', name: f.name, data }, [data]));
+  for (const f of files) f.arrayBuffer().then((data) => toWorker({ type: /\.zip$/i.test(f.name) ? 'restore' : 'upload', name: f.name, data }, [data]));
+}
+// Ask the browser to keep C:\ST3 even when the disk runs low (Chrome decides by itself, without a prompt; an
+// installed app or a bookmarked, often-used site gets it). Without it, the backup is the safety net.
+let persisted = false;
+async function keepStorage() {
+  try {
+    if (!navigator.storage || !navigator.storage.persist) return;
+    persisted = await navigator.storage.persisted() || await navigator.storage.persist();
+  } catch (e) { console.warn(e); }
+}
+function storageNote() {
+  $('storagenote').textContent = persisted
+    ? 'This browser keeps these files permanently (until you clear the site\'s data).'
+    : 'This browser may clear these files if the disk runs low. Use Back up to keep a copy.';
+}
+function backupName() {
+  const d = new Date(), z = (n) => String(n).padStart(2, '0');
+  return 'st3-backup-' + d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()) + '.zip';
 }
 function showFiles() { toWorker({ type: 'list' }); }
 function fileList(files) {
@@ -193,6 +212,7 @@ function fileList(files) {
     a.onclick = (ev) => { ev.preventDefault(); toWorker({ type: 'get', path: p }); };
     li.appendChild(a); list.appendChild(li);
   }
+  keepStorage().then(storageNote);
   $('files').hidden = false;
 }
 function download(path, data) {
@@ -218,6 +238,7 @@ worker.onmessage = (e) => {
   else if (m.type === 'status') { status(m.text); if (m.text && /quit|stopped|Could not/.test(m.text)) running = false; }
   else if (m.type === 'list') fileList(m.files);
   else if (m.type === 'file') download(m.path, m.data);
+  else if (m.type === 'backup') { download(backupName(), m.blob); status('Backed up ' + m.count + ' files from C:\\ST3 to ' + backupName()); }
   else if (m.type === 'stats') { stats = m.stats; if (statsWaiter) { statsWaiter(stats); statsWaiter = null; } }
 };
 worker.onerror = (e) => { status('The emulator failed to start: ' + e.message); };
@@ -230,7 +251,9 @@ screen.addEventListener('mousedown', () => startAudio());
 $('hint').addEventListener('click', () => startAudio());
 $('upload').addEventListener('change', (e) => { upload(e.target.files); e.target.value = ''; screen.focus(); });
 $('filesbtn').addEventListener('click', showFiles);
-$('closefiles').addEventListener('click', () => { $('files').hidden = true; });
+$('closefiles').addEventListener('click', () => { $('files').hidden = true; screen.focus(); });
+$('backupbtn').addEventListener('click', () => { keepStorage(); toWorker({ type: 'backup' }); });
+$('restore').addEventListener('change', (e) => { upload(e.target.files); e.target.value = ''; screen.focus(); });
 $('fullbtn').addEventListener('click', async () => {
   startAudio();
   try {

@@ -33,6 +33,8 @@
   <span class="title">Scream Tracker 3.21</span>
   <label>Add songs<input id="upload" type="file" multiple hidden accept=".s3m,.mod,.stm,.smp,.S3M,.MOD,.STM,.SMP"></label>
   <button id="filesbtn" type="button">Download files</button>
+  <button id="backupbtn" type="button" title="Download everything in C:\ST3 as one .zip">Back up</button>
+  <label title="Put the files from a backup .zip back into C:\ST3">Restore<input id="restore" type="file" hidden accept=".zip"></label>
   <button id="fullbtn" type="button">Full screen</button>
   <span id="help">Ctrl-L load · F5 play · F8 stop · F10 help · Ctrl-F then 1..0 = F1..F10 · Full screen lets ST3 use Ctrl-W/T/N</span>
   <span id="status">Loading…</span>
@@ -42,6 +44,7 @@
 <div id="files" hidden>
   <strong>Files in C:\ST3</strong> (kept in this browser; click one to download it)
   <button id="closefiles" type="button" style="float:right">Close</button>
+  <p id="storagenote" style="color:var(--dim)"></p>
   <ul id="filelist"></ul>
 </div>
 <script src="st3.js"></script>
